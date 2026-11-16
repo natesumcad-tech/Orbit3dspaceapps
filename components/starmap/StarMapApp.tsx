@@ -935,7 +935,7 @@ export default function StarMapApp() {
         </button>
       </div>
 
-      <Tutorial open={tour} hidden={!!sphere || cosmic} mode={mode} inSphere={!!sphere} sphereKind={sphere ? (byId(sphere)?.kind ?? null) : null} onClose={() => {
+      <Tutorial open={tour} hidden={!!sphere || cosmic} mode={mode} inSphere={!!sphere} sphereKind={sphere ? (byId(sphere)?.kind ?? null) : null} cosmic={cosmic} fov={fovDeg} onClose={() => {
           setTour(false);
           // then, after a few seconds of exploring on their own, offer the optional mission
           if (questTimer.current) clearTimeout(questTimer.current);

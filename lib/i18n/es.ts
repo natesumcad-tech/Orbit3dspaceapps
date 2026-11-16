@@ -16,8 +16,8 @@ export const ES: Record<string, string> = {
   "Tilt into 3D": "Inclina a 3D",
   "Flip between a flat star chart and a tilted 3D view.": "Cambia entre un mapa estelar plano y una vista 3D inclinada.",
   "Step inside in 3D": "Entra en 3D",
-  "Planets and constellations are real 3D scenes. Click one to fly there, then click it again to step inside and fly around it.":
-    "Los planetas y las constelaciones son escenas 3D reales. Haz clic en uno para volar hasta allí y vuelve a hacer clic para entrar y volar a su alrededor.",
+  "Planets and constellations are real 3D scenes. Click one to fly there, click it again to step inside, then drag the dial in the Move panel to travel around it.":
+    "Los planetas y las constelaciones son escenas 3D reales. Haz clic en uno para volar hasta allí, vuelve a hacer clic para entrar y luego arrastra el dial del panel Mover para darle la vuelta.",
   "Open a planet or constellation": "Abre un planeta o una constelación",
   "Find anything": "Encuentra lo que quieras",
   "Search for a star, planet or constellation, or ask the sky guide a question.":
@@ -595,6 +595,17 @@ export const ES: Record<string, string> = {
   "You've stepped into a 360° view, but my signal is on the sky map.": "Has entrado en una vista 360°, pero mi señal está en el mapa del cielo.",
   "Press Esc, or the arrowed “Back to the map” button, to come back out. Then:": "Pulsa Esc, o el botón «Volver al mapa» que señala la flecha, para salir. Después:",
   "Take me back to the map": "Llévame de vuelta al mapa",
+  "Nice orbit! Fly with W A S D too, then scroll out or press Esc to continue the tour.": "¡Buena órbita! Vuela también con W A S D y luego aleja el zoom o pulsa Esc para seguir con el recorrido.",
+  "You're inside in 3D! Now drag the dial in the Move panel to travel around it.": "¡Estás dentro en 3D! Ahora arrastra el dial del panel Mover para dar la vuelta.",
+  "{deg}° of {goal}°": "{deg}° de {goal}°",
+  "Zoom out to see everything": "Aleja el zoom para verlo todo",
+  "Keep zooming out (scroll out, press X, or hit ⊙) until the whole sky turns into our Milky Way galaxy. You can always come back out here to see everything at once.": "Sigue alejando el zoom (con la rueda, la tecla X o el botón ⊙) hasta que todo el cielo se convierta en nuestra galaxia, la Vía Láctea. Siempre puedes volver aquí para verlo todo a la vez.",
+  "Pinch out, again and again (or tap ⊙), until the whole sky turns into our Milky Way galaxy.": "Pellizca hacia fuera una y otra vez (o toca ⊙) hasta que todo el cielo se convierta en nuestra galaxia, la Vía Láctea.",
+  "Pinch out until you see the Milky Way": "Pellizca hacia fuera hasta ver la Vía Láctea",
+  "Zoom all the way out": "Aleja el zoom del todo",
+  "That's everything: our whole Milky Way! Press “Zoom into the Sun ↓” to head back and finish the tour.": "¡Esto es todo: nuestra Vía Láctea entera! Pulsa «Acercarse al Sol ↓» para volver y terminar el recorrido.",
+  "Zoom out more! Keep pinching out until the whole Milky Way appears.": "¡Aleja más! Sigue pellizcando hacia fuera hasta que aparezca toda la Vía Láctea.",
+  "Zoom out more! Keep scrolling out until the whole Milky Way appears.": "¡Aleja más! Sigue alejando con la rueda hasta que aparezca toda la Vía Láctea.",
 };
 
 /** Phrases inside computed text (distances, times…), replaced when no exact translation exists. */

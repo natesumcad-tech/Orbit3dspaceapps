@@ -51,6 +51,9 @@ function find3D(): HTMLElement | null {
 }
 
 /** 360° views you can fly around in 3D (a landmark's "sky" view is a flat image). */
+/** How far round the dial counts as having travelled around (degrees). */
+const RING_GOAL = 90;
+
 const IS_3D = ["constellation", "planet", "star", "galaxy", "orbit"];
 
 function findOne(sel: string): HTMLElement | null {
@@ -85,6 +88,8 @@ export default function Tutorial({
   mode,
   inSphere,
   sphereKind,
+  cosmic,
+  fov,
   onClose,
 }: {
   open: boolean;
@@ -94,6 +99,10 @@ export default function Tutorial({
   inSphere: boolean;
   /** What kind of 360° view is open (to tell 3D scenes from flat images). */
   sphereKind: string | null;
+  /** The galaxy (all-the-way-out) view is showing. */
+  cosmic: boolean;
+  /** How much sky the map shows, in degrees (grows as you zoom out). */
+  fov: number;
   onClose: () => void;
 }) {
   const [i, setI] = useState(0);
@@ -143,11 +152,29 @@ export default function Tutorial({
     });
   }, [mode, open, hidden, i]);
 
-  // 360° step: done the moment they step inside a 3D one
+  // 360° step: step inside a 3D one, then travel around it with the dial (the arc tool) in the Move panel
   const in3D = inSphere && IS_3D.includes(sphereKind ?? "");
+  const [ringDeg, setRingDeg] = useState(0);
+  const ringStep = open && in3D && STEPS[i].wait?.kind === "sphere";
   useEffect(() => {
-    if (open && in3D && STEPS[i].wait?.kind === "sphere") setDid(true);
-  }, [open, in3D, i]);
+    if (!ringStep) return;
+    setRingDeg(0);
+    let last: number | null = null;
+    const on = (e: Event) => {
+      const a = (e as CustomEvent<number>).detail;
+      if (last !== null) {
+        let d = a - last;
+        d = Math.atan2(Math.sin(d), Math.cos(d)); // the short way round
+        setRingDeg((v) => v + Math.abs((d * 180) / Math.PI));
+      }
+      last = a;
+    };
+    window.addEventListener("sphere-ring", on);
+    return () => window.removeEventListener("sphere-ring", on);
+  }, [ringStep]);
+  useEffect(() => {
+    if (ringStep && ringDeg >= RING_GOAL) setDid(true);
+  }, [ringStep, ringDeg]);
 
   // Keep the spotlight on its control(s) as panels move and the map animates
   useEffect(() => {
@@ -203,6 +230,27 @@ export default function Tutorial({
     };
   }, [open, hidden, step.wait, did]);
 
+  // Zoom-out step: done once they reach the galaxy view. If they stop zooming short of it for a few
+  // seconds, a reminder tells them to keep going.
+  const zoomStep = open && STEPS[i].wait?.kind === "zoomout";
+  const [nudge, setNudge] = useState(false);
+  const widest = useRef(0);
+  useEffect(() => {
+    if (zoomStep && cosmic) setDid(true);
+  }, [zoomStep, cosmic]);
+  useEffect(() => {
+    if (!zoomStep || did) return setNudge(false);
+    if (fov > widest.current + 0.5) {
+      widest.current = fov; // still zooming out: no nag yet
+      setNudge(false);
+    }
+    const t = setTimeout(() => setNudge(true), 3000);
+    return () => clearTimeout(t);
+  }, [zoomStep, did, fov]);
+  useEffect(() => {
+    if (zoomStep) widest.current = 0;
+  }, [zoomStep]);
+
   // Done it: a beat to see the tick, then on to the next step
   useEffect(() => {
     if (!did || !open || hidden) return; // back on the map first (after a 360° view)
@@ -224,13 +272,35 @@ export default function Tutorial({
   }, [open, hidden, finish, go, i, last, step.wait]);
 
   if (!open) return null;
+  if (hidden && step.wait?.kind === "zoomout" && cosmic)
+    return (
+      <div className="tour-banner" role="status">
+        <span className="tour-check" aria-hidden="true">✓</span>
+        {t("That's everything: our whole Milky Way! Press “Zoom into the Sun ↓” to head back and finish the tour.")}
+      </div>
+    );
   if (hidden)
     return step.wait?.kind === "sphere" && inSphere ? (
-      in3D || did ? (
+      did ? (
         <div className="tour-banner" role="status">
           <span className="tour-check" aria-hidden="true">✓</span>
-          {t("You're inside in 3D! Fly with W A S D, then scroll out or press Esc to finish the tour.")}
+          {t("Nice orbit! Fly with W A S D too, then scroll out or press Esc to continue the tour.")}
         </div>
+      ) : in3D ? (
+        <>
+          <QuestArrow locate={() => {
+            const r = document.querySelector(".xp-ring")?.getBoundingClientRect();
+            return r && r.width ? { x: r.left + r.width / 2, top: r.top, bottom: r.bottom, w: r.width } : null;
+          }} />
+          <div className="tour-banner" role="status">
+            <span className="tour-check muted" aria-hidden="true">↻</span>
+            <span>
+              {t("You're inside in 3D! Now drag the dial in the Move panel to travel around it.")}{" "}
+              <b>{t("{deg}° of {goal}°", { deg: Math.min(RING_GOAL, Math.round(ringDeg)), goal: RING_GOAL })}</b>
+            </span>
+            <i className="tour-ring-bar" aria-hidden="true"><i style={{ width: `${Math.min(100, (ringDeg / RING_GOAL) * 100)}%` }} /></i>
+          </div>
+        </>
       ) : (
         <div className="tour-banner" role="status">
           <span className="tour-check muted" aria-hidden="true">i</span>
@@ -293,6 +363,11 @@ export default function Tutorial({
             ) : step.wait ? (
               <div className="tour-task">
                 <span className={`tour-chip ${did ? "ok" : "live"}`}>{did ? t("✓ Nice!") : t((touch && step.touch?.prompt) || step.wait.prompt)}</span>
+                {step.wait.kind === "zoomout" && nudge && !did && (
+                  <span className="tour-nudge" role="status">
+                    {t(touch ? "Zoom out more! Keep pinching out until the whole Milky Way appears." : "Zoom out more! Keep scrolling out until the whole Milky Way appears.")}
+                  </span>
+                )}
               </div>
             ) : (
               <span />

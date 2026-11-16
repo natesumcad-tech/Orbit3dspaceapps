@@ -1,6 +1,6 @@
 /** The Sky Explorer tour's steps. */
 
-export type Wait = "move" | "hover" | "modes" | "sphere";
+export type Wait = "move" | "hover" | "modes" | "sphere" | "zoomout";
 export type Step = {
   /** CSS selector(s) of the control(s) to spotlight (none: nothing highlighted). */
   target?: string | string[];
@@ -32,7 +32,7 @@ export const STEPS: Step[] = [
   {
     target: "visible-3d",
     title: "Step inside in 3D",
-    body: "Planets and constellations are real 3D scenes. Click one to fly there, then click it again to step inside and fly around it.",
+    body: "Planets and constellations are real 3D scenes. Click one to fly there, click it again to step inside, then drag the dial in the Move panel to travel around it.",
     wait: { kind: "sphere", prompt: "Open a planet or constellation" },
   },
   {
@@ -49,6 +49,13 @@ export const STEPS: Step[] = [
     target: ".mv-blink-bar",
     title: "Hunt for Planet X",
     body: "Blink flips between two real SPHEREx images of the same spot, taken six months apart. Stars stay put; anything in our solar system jumps. Try ★ Planets moving to watch Neptune and Saturn do it.",
+  },
+  {
+    target: ".mv-zoom",
+    title: "Zoom out to see everything",
+    body: "Keep zooming out (scroll out, press X, or hit ⊙) until the whole sky turns into our Milky Way galaxy. You can always come back out here to see everything at once.",
+    touch: { body: "Pinch out, again and again (or tap ⊙), until the whole sky turns into our Milky Way galaxy.", prompt: "Pinch out until you see the Milky Way" },
+    wait: { kind: "zoomout", prompt: "Zoom all the way out" },
   },
   {
     title: "You're all set",

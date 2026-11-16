@@ -1351,3 +1351,12 @@ button.q-chip:hover { filter: brightness(1.08); }
 .qa-ring i { position: absolute; inset: 0; border: 3px solid #ffe873; border-radius: 999px; animation: qa-pulse 1.3s ease-out infinite; }
 @keyframes qa-pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .qa-ring i { animation: none; } }
+
+/* tour: progress travelling round with the 360° dial */
+.tour-ring-bar { display: block; flex: none; width: 70px; height: 6px; border-radius: 3px; background: rgba(0,0,0,.12); overflow: hidden; }
+.tour-ring-bar i { display: block; height: 100%; background: #c28a2c; border-radius: 3px; transition: width .2s ease; }
+
+/* tour: 'zoom out more' reminder */
+.tour-nudge { display: block; margin-top: 6px; font-size: 12.5px; font-weight: 600; color: #8a5200; background: #fff3c4; border: 1px solid #ffe873; border-radius: 8px; padding: 5px 9px; animation: tour-nudge .5s ease both; }
+@keyframes tour-nudge { 0% { transform: translateX(0); } 25% { transform: translateX(-4px); } 50% { transform: translateX(4px); } 75% { transform: translateX(-2px); } 100% { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tour-nudge { animation: none; } }

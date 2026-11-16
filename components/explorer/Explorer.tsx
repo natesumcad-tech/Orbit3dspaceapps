@@ -397,7 +397,12 @@ function MoveControls({ nav, engine, constellation }: { nav: NavState; engine: S
     return Math.atan2(e.clientX - (r.left + r.width / 2), -(e.clientY - (r.top + r.height / 2)));
   };
   // Clockwise on the ring = turn right, which is a smaller yaw
-  const setRing = (a: number) => (orbiting ? engine?.setOrbit({ az: a }) : engine?.setLook({ yaw: -a }));
+  const setRing = (a: number) => {
+    if (orbiting) engine?.setOrbit({ az: a });
+    else engine?.setLook({ yaw: -a });
+    // the tour listens: it asks you to travel around with this dial
+    window.dispatchEvent(new CustomEvent("sphere-ring", { detail: a }));
+  };
   // Distance / zoom sliders are logarithmic
   const logR = (r: number) => Math.log(r / nav.rMin) / Math.log(nav.rMax / nav.rMin);
   const logF = (f: number) => 1 - Math.log(f / nav.fovMin) / Math.log(100 / nav.fovMin);
