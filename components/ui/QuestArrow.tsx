@@ -10,6 +10,31 @@ import { useEffect, useRef } from "react";
 export type ArrowSpot = { x: number; top: number; bottom: number; behind?: boolean; label?: string; /** width of a control to ring (points get a circle) */ w?: number };
 
 const M = 54; // keep the arrow this far inside the screen edges
+
+/** Angles around a target to try, starting straight above it (radians, clockwise). */
+const AROUND = [0, -0.6, 0.6, -1.15, 1.15, -Math.PI / 2, Math.PI / 2, -2.1, 2.1, Math.PI];
+
+/** Panels and text boxes the arrow mustn't cover. */
+const BLOCKERS =
+  ".q-card, .q-mini, .tour-card, .tour-banner, .site-tabs, .mv-glass, .mv-blink-bar, .mv-coord-form, .mv-coord-center, .mv-wrench, .mv-pop, .mv-ai.open, .xp-card, .xp-move, .xp-toolbar, .xp-hint, .xp-zoom, .bk-card, .cv-hud, .cv-card";
+type Box = { l: number; r: number; t: number; b: number };
+let blockCache: { at: number; boxes: Box[] } = { at: -1e9, boxes: [] };
+/** Where the panels are (measured a few times a second, not every frame: measuring forces a layout). */
+function obstacles(p: ArrowSpot): Box[] {
+  const now = performance.now();
+  if (now - blockCache.at > 250) {
+    const boxes: Box[] = [];
+    document.querySelectorAll<HTMLElement>(BLOCKERS).forEach((el) => {
+      if (el.checkVisibility && !el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) return;
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0) boxes.push({ l: r.left - 4, r: r.right + 4, t: r.top - 4, b: r.bottom + 4 });
+    });
+    blockCache = { at: now, boxes };
+  }
+  // a panel the target sits inside (a button in a card) can't be avoided: leave it out
+  const cy = (p.top + p.bottom) / 2;
+  return blockCache.boxes.filter((o) => !(p.x > o.l && p.x < o.r && cy > o.t && cy < o.b));
+}
 // Pinned to the edge, it stays clear of the toolbars along the top and the timeline at the bottom
 const EDGE = { top: 150, bottom: 120, side: 80 };
 
@@ -41,13 +66,36 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
       const W = window.innerWidth, H = window.innerHeight;
       const onScreen = !p.behind && p.x > M && p.x < W - M && p.bottom > M && p.top < H - M;
       let x: number, y: number, deg: number, mode: string;
+      const blocks = obstacles(p);
       if (onScreen) {
-        // hover over it pointing down (or under it pointing up if it's right at the top)
-        const under = p.top < 86;
-        x = p.x;
-        y = under ? p.bottom + 8 : p.top - 8;
-        deg = under ? 180 : 0;
-        mode = under ? "over under" : "over";
+        // Hover just outside the target pointing at it: above if that's clear, otherwise from the first
+        // angle around it that doesn't sit on a panel or text box (re-checked every frame, so it swings
+        // back above once that space frees up)
+        const cx = p.x, cy = (p.top + p.bottom) / 2, hx = Math.max(12, (p.w ?? 24) / 2), hy = Math.max(12, (p.bottom - p.top) / 2);
+        let pick: { tx: number; ty: number; ux: number; uy: number } | null = null;
+        let best: { tx: number; ty: number; ux: number; uy: number; cover: number } | null = null;
+        search: for (const gap of [8, 44]) // right next to it first, then a little further out
+          for (const a of AROUND) {
+            const ux = Math.sin(a), uy = -Math.cos(a); // a = 0 is straight up
+            const t = Math.min(hx / Math.max(1e-6, Math.abs(ux)), hy / Math.max(1e-6, Math.abs(uy))) + gap;
+            const tx = cx + ux * t, ty = cy + uy * t; // the arrow's tip
+            const bx = tx + ux * 24, by = ty + uy * 24; // the middle of the arrow (bobbing included)
+            const box = { l: bx - 26, r: bx + 26, t: by - 26, b: by + 26 };
+            if (box.l < 4 || box.t < 4 || box.r > W - 4 || box.b > H - 4) continue;
+            let cover = 0;
+            for (const o of blocks) cover += Math.max(0, Math.min(box.r, o.r) - Math.max(box.l, o.l)) * Math.max(0, Math.min(box.b, o.b) - Math.max(box.t, o.t));
+            if (cover === 0) {
+              pick = { tx, ty, ux, uy };
+              break search;
+            }
+            if (!best || cover < best.cover - 1) best = { tx, ty, ux, uy, cover };
+          }
+        // nowhere fully clear: the spot that covers the least
+        pick ??= best ?? { tx: cx, ty: p.top - 8, ux: 0, uy: -1 };
+        x = pick.tx;
+        y = pick.ty;
+        deg = (Math.atan2(-pick.uy, -pick.ux) * 180) / Math.PI - 90; // the arrow is drawn pointing down
+        mode = "over";
       } else {
         // pin to the screen edge, pointing toward it
         const cx = W / 2, cy = (EDGE.top + H - EDGE.bottom) / 2;
@@ -57,6 +105,14 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
         const k = Math.min(hw / Math.max(1e-6, Math.abs(dx)), hh / Math.max(1e-6, Math.abs(dy)));
         x = cx + dx * k;
         y = cy + dy * k;
+        // slide in from the edge until it's clear of panels (with its label)
+        const len = Math.hypot(dx, dy) || 1, sx = -dx / len, sy = -dy / len;
+        for (let n = 0; n < 16; n++) {
+          const box = { l: x - 60, r: x + 60, t: y - 40, b: y + 40 };
+          if (!blocks.some((o) => box.l < o.r && box.r > o.l && box.t < o.b && box.b > o.t)) break;
+          x += sx * 24;
+          y += sy * 24;
+        }
         deg = (Math.atan2(dy, dx) * 180) / Math.PI - 90; // the arrow is drawn pointing down
         mode = "edge";
       }
