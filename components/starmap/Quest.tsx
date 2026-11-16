@@ -193,7 +193,7 @@ function ReportHelp({
       <li className={raOk ? "ok" : ""}>
         <i>{raOk ? "✓" : "2"}</i>
         <span>
-          {t("Copy the")} <b className="q-tag ra">RA</b> {t("(circled in blue on the “Center J2000” line) into the RA box. It's hours and minutes:")}{" "}
+          {t("Copy the")} <b className="q-tag ra">RA</b> {t("(circled in blue on the “Center J2000” line; click it to copy) into the RA box. It's hours and minutes:")}{" "}
           {centered && (
             <button className="q-chip ra" onClick={() => setRaIn(raText)} title={t("Tap to fill it in")}>
               {raText}
@@ -204,7 +204,7 @@ function ReportHelp({
       <li className={decOk ? "ok" : ""}>
         <i>{decOk ? "✓" : "3"}</i>
         <span>
-          {t("Copy the")} <b className="q-tag dec">Dec</b> {t("(circled in orange) into the Dec box. It's degrees, + means north:")}{" "}
+          {t("Copy the")} <b className="q-tag dec">Dec</b> {t("(circled in orange; click it to copy) into the Dec box. It's degrees, + means north:")}{" "}
           {centered && (
             <button className="q-chip dec" onClick={() => setDecIn(decText)} title={t("Tap to fill it in")}>
               {decText}

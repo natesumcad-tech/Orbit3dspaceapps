@@ -5,7 +5,7 @@ import SiteTabs from "@/components/SiteTabs";
 import ResetTutorialButton from "@/components/ResetTutorialButton";
 import ScrollReveal from "@/components/ScrollReveal";
 import SpectrumExplorer from "@/components/SpectrumExplorer";
-import { site, project, mission, resources, credits, aiUse } from "@/content/site";
+import { site, project, mission, resources, credits, aiUse, access } from "@/content/site";
 import "./home.css";
 
 // 102 bars: one for each SPHEREx band, shaped like a gentle spectrum
@@ -253,10 +253,30 @@ export default function Home() {
           </div>
         </section>
 
+        {/* ── Accessible to everyone ── */}
+        <section id="access" className="h-section">
+          <h2 className="h-split center">
+            For anyone, anywhere <span>06 · Access</span>
+          </h2>
+          <div className="h-access">
+            <h3>{access.title}</h3>
+            <p className="h-access-lead">{access.lead}</p>
+            <ul>
+              {access.points.map((pt) => (
+                <li key={pt.title}>
+                  <b>{pt.title}</b>
+                  <span>{pt.text}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="h-access-close">{access.close}</p>
+          </div>
+        </section>
+
         {/* ── Resources + final CTA ── */}
         <section className="h-section">
           <h2 className="h-split center">
-            Data & references <span>06 · Sources</span>
+            Data & references <span>07 · Sources</span>
           </h2>
           <ul className="h-resources">
             {resources.map((r) => (
@@ -273,7 +293,7 @@ export default function Home() {
         {/* ── Credits & AI use ── */}
         <section id="credits" className="h-section">
           <h2 className="h-split center">
-            Credits <span>07 · Data, code & AI</span>
+            Credits <span>08 · Data, code & AI</span>
           </h2>
           <div className="h-project">
             <div className="h-box">
@@ -314,10 +334,10 @@ export default function Home() {
 
       <footer className="h-footer">
         <span>
-          Built for the {site.event}.
+          Built by {site.team} for the {site.event}.
         </span>
         <span>
-          <a href="#credits">Credits</a>
+          Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> · <a href="#credits">Credits</a>
         </span>
         <span className="h-fine">
           SPHEREx mission information courtesy of NASA/JPL-Caltech. A student hackathon project, not an official NASA website.

@@ -1394,3 +1394,12 @@ button.q-chip:hover { filter: brightness(1.08); }
 .sound-toggle:focus-visible { outline: 2px solid #c9a46a; outline-offset: 2px; }
 .mv-lang-sec .sound-toggle { background: rgba(0,0,0,.06); margin-left: 8px; vertical-align: middle; }
 @media (max-width: 600px) { .mv-actions .sound-toggle { display: none; } }
+
+/* click-to-copy coordinates */
+button.mv-cc, button.mv-coord-dec { font: inherit; color: inherit; background: transparent; cursor: copy; position: relative; }
+button.mv-coord-dec { border: 0; padding: 1px 4px; border-radius: 6px; font-family: var(--font-mono, ui-monospace, monospace); }
+button.mv-cc:hover, button.mv-coord-dec:hover { background: rgba(255, 255, 255, .12); }
+button.mv-cc:focus-visible, button.mv-coord-dec:focus-visible { outline: 2px solid #c9a46a; outline-offset: 1px; }
+.mv-cc.copied, .mv-coord-dec.copied { background: rgba(63, 143, 95, .35) !important; }
+.mv-cc-done { position: absolute; left: 50%; top: calc(100% + 4px); transform: translateX(-50%); font: 700 10px/1 var(--font-sans, system-ui, sans-serif); font-style: normal; color: #0d0b08; background: #9be7c4; border-radius: 999px; padding: 3px 7px; white-space: nowrap; z-index: 5; pointer-events: none; }
+.mv-cc-hint { font-size: 10px; opacity: .7; }

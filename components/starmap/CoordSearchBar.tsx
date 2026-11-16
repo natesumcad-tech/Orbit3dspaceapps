@@ -42,6 +42,17 @@ export default function CoordSearchBar({
   }, []);
   const [openPresets, setOpenPresets] = useState(false);
   const [copied, setCopied] = useState(false);
+  // Click a coordinate to copy it (to paste into the mission, a notebook, or a message)
+  const [copiedPart, setCopiedPart] = useState<string | null>(null);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copy = (part: string, text: string) => {
+    const done = () => {
+      setCopiedPart(part);
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+      copyTimer.current = setTimeout(() => setCopiedPart(null), 1400);
+    };
+    navigator.clipboard?.writeText(text).then(done, done);
+  };
 
   const trimmed = query.trim();
   const parsed = trimmed ? parseRaDec(trimmed) : null;
@@ -126,15 +137,20 @@ export default function CoordSearchBar({
 
       <div className="mv-coord-center">
         <span>Center J2000:</span>
-        <span className="mv-cc mv-cc-ra" title={t("Right ascension (RA): how far east around the sky, in hours")}>
+        <button type="button" className={`mv-cc mv-cc-ra ${copiedPart === "ra" ? "copied" : ""}`} onClick={() => copy("ra", formatRaHMS(centerRa))} title={`${t("Right ascension (RA): how far east around the sky, in hours")} · ${t("Click to copy")}`}>
           <small>RA</small>
           <code>{formatRaHMS(centerRa)}</code>
-        </span>
-        <span className="mv-cc mv-cc-dec" title={t("Declination (Dec): how far north (+) or south (−), in degrees")}>
+          {copiedPart === "ra" && <em className="mv-cc-done">{t("Copied!")}</em>}
+        </button>
+        <button type="button" className={`mv-cc mv-cc-dec ${copiedPart === "dec" ? "copied" : ""}`} onClick={() => copy("dec", formatDecDMS(centerDec))} title={`${t("Declination (Dec): how far north (+) or south (−), in degrees")} · ${t("Click to copy")}`}>
           <small>Dec</small>
           <code>{formatDecDMS(centerDec)}</code>
-        </span>
-        <code className="mv-coord-dec">({centerRa.toFixed(3)}°, {centerDec >= 0 ? "+" : ""}{centerDec.toFixed(3)}°)</code>
+          {copiedPart === "dec" && <em className="mv-cc-done">{t("Copied!")}</em>}
+        </button>
+        <button type="button" className={`mv-coord-dec ${copiedPart === "deg" ? "copied" : ""}`} onClick={() => copy("deg", `${centerRa.toFixed(3)}, ${centerDec >= 0 ? "+" : ""}${centerDec.toFixed(3)}`)} title={t("Click to copy")}>
+          ({centerRa.toFixed(3)}°, {centerDec >= 0 ? "+" : ""}{centerDec.toFixed(3)}°){copiedPart === "deg" && <em className="mv-cc-done">{t("Copied!")}</em>}
+        </button>
+        <span className="mv-cc-hint">{t("(click to copy)")}</span>
       </div>
 
       {openPresets && (

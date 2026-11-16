@@ -618,6 +618,10 @@ export const ES: Record<string, string> = {
   "Sound effects on": "Efectos de sonido activados",
   "Sound effects off": "Efectos de sonido desactivados",
   "Sound effects": "Efectos de sonido",
+  "Click to copy": "Haz clic para copiar",
+  "(click to copy)": "(haz clic para copiar)",
+  "(circled in blue on the “Center J2000” line; click it to copy) into the RA box. It's hours and minutes:": "(rodeada en azul en la línea «Center J2000»; haz clic en ella para copiarla) en la casilla RA. Son horas y minutos:",
+  "(circled in orange; click it to copy) into the Dec box. It's degrees, + means north:": "(rodeada en naranja; haz clic en ella para copiarla) en la casilla Dec. Son grados; + significa norte:",
 };
 
 /** Phrases inside computed text (distances, times…), replaced when no exact translation exists. */

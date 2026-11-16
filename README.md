@@ -98,3 +98,9 @@ Artificial intelligence (Anthropic's Claude) was used to help write the code for
 ## License
 
 MIT
+
+## Team & contact
+
+Built by Team Big Bang for the NASA Space Apps Challenge.
+
+Contact: [nasaorbit3dbusiness@gmail.com](mailto:nasaorbit3dbusiness@gmail.com)

@@ -4,6 +4,8 @@
 
 export const site = {
   projectName: "Sky Explorer",
+  team: "Team Big Bang",
+  contactEmail: "nasaorbit3dbusiness@gmail.com",
   tagline:
     "Step inside the sky NASA's SPHEREx is mapping: real stars, planets and the Milky Way in 360°.",
   event: "NASA Space Apps Challenge",
@@ -22,6 +24,21 @@ export const project = {
     "Learn by doing: a one-minute tour, an AI sky guide, and an optional rescue mission that teaches coordinates with real data",
   ],
   tools: ["Next.js", "three.js", "TypeScript", "Vercel", "SPHEREx DR1 (IRSA)", "HYG star catalogue", "JPL orbital elements", "SIMBAD", "Google Gemini"],
+};
+
+/** Why this exists: making SPHEREx's public data usable by anyone, anywhere. */
+export const access = {
+  title: "The sky is public. The data should feel that way too.",
+  lead:
+    "Every SPHEREx image is free to download, but the archive was built for professional astronomers: FITS files, query forms and catalogue jargon. That quietly shuts out the people most likely to fall in love with it, students without an observatory, a telescope or a mentor nearby. We built this to close that gap.",
+  points: [
+    { title: "Nothing to install, nothing to pay", text: "It runs in the browser on a school Chromebook or a phone, with a battery-saver mode for older devices. No account, no download, no fees." },
+    { title: "In your language", text: "English and Spanish, picked automatically from your browser, with every star, planet, mission line and button translated." },
+    { title: "Learn by doing", text: "A one-minute tour, a guided rescue mission and a sky guide that answers questions, so coordinates and infrared light make sense because you've used them." },
+    { title: "A path to real science", text: "The same exposures researchers download, ready to open in Python, and links to citizen-science projects where anyone can help make real discoveries." },
+    { title: "Open to everyone", text: "Usable with a keyboard or a screen reader, and checked against accessibility standards on every screen." },
+  ],
+  close: "Wherever you are, if you're curious about the universe, you should be able to explore the same sky the scientists do.",
 };
 
 export const mission = {
