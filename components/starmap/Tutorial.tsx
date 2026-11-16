@@ -5,7 +5,7 @@ import { STEPS, type Step } from "@/lib/ui/tourSteps";
 import { useT } from "@/lib/i18n";
 import { topSlot } from "@/lib/ui/placement";
 import QuestArrow from "@/components/ui/QuestArrow";
-import { isVoiceMuted, playAudio, setVoiceMuted, stopSpeech } from "@/lib/ui/voice";
+import { isVoiceMuted, setVoiceMuted, speak, stopSpeech } from "@/lib/ui/voice";
 import { sfx } from "@/lib/ui/sound";
 
 /** Remembered in a cookie (and browser storage as a backup) so the tour only plays once. */
@@ -132,7 +132,7 @@ export default function Tutorial({
       return;
     }
     const body = t(touch && step.touch ? step.touch.body : step.body);
-    playAudio(`/audio/tutorial/${i}.mp3`, `${t(step.title)}. ${body}`);
+    speak(`${t(step.title)}. ${body}`);
     return () => stopSpeech();
   }, [open, hidden, muted, i, step, touch, t]);
 
