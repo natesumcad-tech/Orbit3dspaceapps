@@ -42,6 +42,22 @@ export const access = {
   close: "Wherever you are, if you're curious about the universe, you should be able to explore the same sky the scientists do.",
 };
 
+/** The team's project write-up, word for word (as submitted). */
+export const writeup = {
+  summary:
+    "Orbit3D is a compilation of the data from SPHEREx, turned into a user-friendly and engaging website. As space enthusiasts load into the webpage, they are greeted with friendly UI and easy to understand explanations of how the data is presented. After opening the map itself, a tutorial opens up to show beginners how to use the tool. This immersive web application directly addresses the prompt by allowing anybody on the internet to access and understand data from the SPHEREx mission. You can explore the changes we have observed in our universe by moving across the timeline at the bottom of the map. The intuitive controls make this experience accessible to any person, regardless of experience in the field of astronomy. The importance of Orbit3D is shown in its limitless ability to further the education of up and coming generations. Future young explorers could use the vast tools provided by our website to explore the universe, and ask questions with our personal AI chatbot. Encouraging curiosity in these fields creates a bright future for humans, when we make plans to pack our bags and head out into the unknown depths of space.",
+  demoUrl: "https://youtu.be/gh6pHNaw74M",
+  demoEmbed: "https://www.youtube-nocookie.com/embed/gh6pHNaw74M",
+  projectUrl: "https://orbit3d.earth",
+  details: [
+    "For our project, we built Orbit3D, an interactive web app letting anyone explore NASA's Spherex infrared sky survey the way you would use Google Maps or Street View. When we first delved into the challenge, we realized that the Spherex data mostly sat inside scientific archives intimidating to those not working in astronomy. We wanted to build something where a student, teacher, or anyone curious could just open the site in their browser and start exploring infrared space.",
+    "Sky Explorer streams live Spherex DR1 imagery straight from the IRSA along with extra surveys like 2MASS, MSX, and Spitzer. Behind the scenes, web background proccesses download sky tiles and reproject them onto a smooth 2d/3d map. You can fly across the sky, check out Spherex's 102 wavelength bands to see how dust clouds and starts look in different parts of the spectrum, jump to RA/Dec coordinates, and locate Spherex data files of whatever you are viewing.",
+    "We didn't want people to feel lost on what to actually look for. So alongside a free roam experience, we added a short interactive tutorial, a built in Sky Guide chat to explain and travel to targets, and a story mission. In the mission, you help a stranded ship regain its bearings by reading real RA/Dec coordinates and switching infrared bands on live Spherex cutouts.",
+    "Everything was built on our regular laptops using TypeScript, React, Next.js, HTML/CSS, and Three.js for rendering, hosted as a web app on Vercel. To line up the sky tiling accurately, we connected live data from ISRA with star catalogs and constellation lines, used JPL orbital elements to track planets, and wired up SIMBAD so that Sky Guide could look up astronomical objects when answering questions.",
+    "While putting together this app, we spent much of our time thinking about where this site would be used. Rendering  a 3d map while streaming 102 band tiles can easiler slow older generation laptops and phones, soo we kept tile generation in background threads, cached chatbot lookups, set up a low quality mode for modest hardware, and added translations for both English and Spanish. Lastly, a big thing we considered was keeping true to science. None of the space imagery is AI generated, and all AI generated illustrations or story elements are clearly pointed out.",
+  ],
+};
+
 export const mission = {
   stats: [
     { value: "102", label: "infrared colors (spectral bands)" },

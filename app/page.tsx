@@ -4,7 +4,7 @@ import Link from "next/link";
 import SiteTabs from "@/components/SiteTabs";
 import ScrollReveal from "@/components/ScrollReveal";
 import SpectrumExplorer from "@/components/SpectrumExplorer";
-import { site, project, mission, resources, credits, aiUse, access } from "@/content/site";
+import { site, project, mission, resources, credits, aiUse, access, writeup } from "@/content/site";
 import "./home.css";
 
 // 102 bars: one for each SPHEREx band, shaped like a gentle spectrum
@@ -225,22 +225,38 @@ export default function Home() {
         {/* ── Project ── */}
         <section id="project" className="h-section">
           <h2 className="h-split center">
-            {project.challenge} <span>05 · The project</span>
+            {site.brand} <span>05 · The project</span>
           </h2>
-          <div className="h-project">
+          <div className="h-writeup">
             <div className="h-box">
-              <h3>The problem</h3>
-              <p>{project.problem}</p>
-              <h3>The solution</h3>
-              <p>{project.solution}</p>
+              <h3>Summary</h3>
+              <p>{writeup.summary}</p>
+              <p className="h-writeup-link">
+                <b>Project</b> <a href={writeup.projectUrl}>{writeup.projectUrl.replace("https://", "")}</a>
+              </p>
             </div>
             <div className="h-box">
-              <h3>How it works</h3>
-              <ol>
-                {project.howItWorks.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ol>
+              <h3>Project Demonstration</h3>
+              <div className="h-video">
+                <iframe
+                  src={writeup.demoEmbed}
+                  title="Orbit3D project demonstration video"
+                  loading="lazy"
+                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+              <p className="h-writeup-link">
+                <a href={writeup.demoUrl} target="_blank" rel="noreferrer">
+                  Watch on YouTube ↗
+                </a>
+              </p>
+            </div>
+            <div className="h-box h-writeup-details">
+              <h3>Project Details</h3>
+              {writeup.details.map((d) => (
+                <p key={d.slice(0, 40)}>{d}</p>
+              ))}
               <h3>Built with</h3>
               <ul className="h-tags">
                 {project.tools.map((t) => (
@@ -335,7 +351,7 @@ export default function Home() {
           Built by {site.team} for the {site.event}.
         </span>
         <span>
-          Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> · <a href="#credits">Credits</a>
+          <Link href="/contact">Contact us</Link> · <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> · <a href="#credits">Credits</a>
         </span>
         <span className="h-fine">
           SPHEREx mission information courtesy of NASA/JPL-Caltech. A student hackathon project, not an official NASA website.

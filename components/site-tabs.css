@@ -9,3 +9,5 @@
   .mv-top-left { max-width: calc(100vw - 28px); flex-wrap: wrap; }
   .mv-top-left .site-tabs a { padding: 8px 10px; font-size: .75rem; }
 }
+/* On a phone's map screen there's no room for a third tab (Contact is still in the homepage footer) */
+@media (max-width: 600px) { .mv .site-tabs .tab-contact { display: none; } }
