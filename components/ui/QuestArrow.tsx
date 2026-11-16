@@ -74,7 +74,7 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
       el.style.display = "";
       el.className = `qa ${mode}`;
       el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-      rot.style.transform = `rotate(${deg.toFixed(1)}deg)`;
+      rot.style.transform = `rotate(${deg.toFixed(1)}deg)${mode === "edge" ? " scale(.75)" : ""}`;
       label.textContent = mode === "edge" ? (p.label ?? "") : "";
       if (mode === "edge") {
         // the name sits on the screen side of the arrow, so it never runs off the edge
@@ -94,9 +94,9 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
     <div ref={root} className="qa" style={{ display: "none" }} aria-hidden="true">
       <div ref={turn} className="qa-turn">
         <div className="qa-bob">
-          <svg viewBox="0 0 36 44" width="36" height="44">
+          <svg viewBox="0 0 40 36" width="40" height="36">
             {/* waypoint triangle pointing down: tip at the bottom centre */}
-            <path d="M4 4 H32 L18 40 Z" fill="#ffd400" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M3 3 H37 L20 33 Z" fill="#ffd400" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
           </svg>
         </div>
       </div>
