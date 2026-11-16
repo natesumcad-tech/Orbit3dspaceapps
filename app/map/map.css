@@ -1410,3 +1410,14 @@ button.mv-cc:focus-visible, button.mv-coord-dec:focus-visible { outline: 2px sol
 .q-or-inline { color: #a15c00; }
 .q-ex-arrow { color: #a15c00; font-weight: 700; }
 .q-orbit { color: #a15c00; }
+
+/* Controls: show only the gestures for this device (the generic ".mv-help ul" grid rule was showing both lists),
+   and never let the panel grow up into the coordinate and Blink panels above it */
+.mv-help .mv-touch-help { display: none; }
+@media (pointer: coarse) {
+  .mv-help .mv-touch-help { display: grid; }
+  .mv-help .mv-key-help { display: none; }
+}
+@media (min-width: 761px) {
+  .mv-help { max-height: calc(100vh - 440px); min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+}
