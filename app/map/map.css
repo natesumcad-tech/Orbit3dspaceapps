@@ -287,9 +287,9 @@
 
 /* Settings window: fades in over the map, scrolls, fades out on Done */
 .mv-settings {
-  position: absolute;
+  position: fixed; /* the settings window sits on top of everything: panels, the mission, the tour and its arrows */
   inset: 0;
-  z-index: 30;
+  z-index: 1000;
   display: grid;
   place-items: center;
   padding: 16px;
