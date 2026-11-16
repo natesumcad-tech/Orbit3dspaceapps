@@ -5,6 +5,7 @@ import { STEPS, type Step } from "@/lib/ui/tourSteps";
 import { useT } from "@/lib/i18n";
 import { topSlot } from "@/lib/ui/placement";
 import QuestArrow from "@/components/ui/QuestArrow";
+import { isVoiceMuted, setVoiceMuted, speak, stopSpeech } from "@/lib/ui/voice";
 
 /** Remembered in a cookie (and browser storage as a backup) so the tour only plays once. */
 const COOKIE = "sx_tour_done_v2"; // bump the version to show the tour to everyone again
@@ -118,10 +119,21 @@ export default function Tutorial({
   const card = useRef<HTMLDivElement>(null);
 
   const t = useT();
+  const [muted, setMuted] = useState(() => isVoiceMuted());
   const step = STEPS[i];
   const last = i === STEPS.length - 1;
   const touch = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
   const count = STEPS.length - 2; // the welcome and closing cards aren't numbered
+
+  useEffect(() => {
+    if (!open || hidden || muted) {
+      stopSpeech();
+      return;
+    }
+    const body = t(touch && step.touch ? step.touch.body : step.body);
+    speak(`${t(step.title)}. ${body}`);
+    return () => stopSpeech();
+  }, [open, hidden, muted, i, step, touch, t]);
 
   const finish = useCallback(() => {
     markTourDone();
@@ -372,11 +384,26 @@ export default function Tutorial({
         <div className="tour-inner" key={i}>
           <div className="tour-meta">
             <span>{i === 0 ? t("Quick tour") : last ? t("Done") : t("Step {n} of {count}", { n: i, count })}</span>
-            {i === 0 && (
-              <button className="tour-link" onClick={finish}>
-                {t("Skip tutorial")}
+            <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+              <button
+                className="tour-link"
+                type="button"
+                onClick={() => {
+                  const next = !muted;
+                  setMuted(next);
+                  setVoiceMuted(next);
+                }}
+                aria-label={muted ? "Unmute voice" : "Mute voice"}
+                title={muted ? "Unmute voice" : "Mute voice"}
+              >
+                {muted ? "🔇" : "🔊"}
               </button>
-            )}
+              {i === 0 && (
+                <button className="tour-link" onClick={finish}>
+                  {t("Skip tutorial")}
+                </button>
+              )}
+            </div>
           </div>
           <h2 id="tour-title">{t(step.title)}</h2>
           <p id="tour-body">{t(touch && step.touch ? step.touch.body : step.body)}</p>

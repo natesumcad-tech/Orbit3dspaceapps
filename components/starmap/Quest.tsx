@@ -7,6 +7,7 @@ import { topSlot } from "@/lib/ui/placement";
 import { formatDecDMS, formatRaHMS } from "@/lib/starmap/coordSearch";
 import QuestArrow, { type ArrowSpot } from "@/components/ui/QuestArrow";
 import { useT, useTV } from "@/lib/i18n";
+import { isVoiceMuted, setVoiceMuted, speak, stopSpeech } from "@/lib/ui/voice";
 
 /** Mission progress lives in this browser, so it survives a reload. */
 const STORE = "starmap.quest.v1";
@@ -257,6 +258,17 @@ export default function Quest({
   const [phase, setPhase] = useState<Phase>("offer");
   const [queue, setQueue] = useState<Line[]>([]);
   const [li, setLi] = useState(0);
+  const [muted, setMuted] = useState(() => isVoiceMuted());
+
+  useEffect(() => {
+    const line = queue[li];
+    if (!open || hidden || muted || phase !== "talk" || !line) {
+      stopSpeech();
+      return;
+    }
+    speak(t(line.text));
+    return () => stopSpeech();
+  }, [open, hidden, muted, phase, queue, li, t]);
   const [hint, setHint] = useState(false);
   const [mini, setMini] = useState(false);
   const [raIn, setRaIn] = useState("");
@@ -531,6 +543,19 @@ export default function Quest({
             <span>{t("Survey ship Wren · fictional")}</span>
           </div>
           <span className="q-count">
+            <button
+              type="button"
+              onClick={() => {
+                const next = !muted;
+                setMuted(next);
+                setVoiceMuted(next);
+              }}
+              aria-label={muted ? "Unmute voice" : "Mute voice"}
+              title={muted ? "Unmute voice" : "Mute voice"}
+              style={{ background: "none", border: "none", color: "inherit", cursor: "pointer", marginRight: "6px", padding: 0 }}
+            >
+              {muted ? "🔇" : "🔊"}
+            </button>
             {li + 1}/{queue.length}
           </span>
         </div>
