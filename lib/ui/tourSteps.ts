@@ -25,8 +25,8 @@ export const STEPS: Step[] = [
   },
   {
     target: ".mv-top-row .mv-seg",
-    title: "Tilt into 3D",
-    body: "Flip between a flat star chart and a tilted 3D view.",
+    title: "Switch between 2D and 3D",
+    body: "The map opens tilted in 3D. Flip to the flat 2D star chart, then back to 3D.",
     wait: { kind: "modes", prompt: "" },
   },
   {

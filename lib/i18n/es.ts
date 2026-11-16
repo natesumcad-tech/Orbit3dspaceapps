@@ -627,6 +627,8 @@ export const ES: Record<string, string> = {
   "Orbit Neptune to find the Wren": "Orbita Neptuno para encontrar la Wren",
   "Drag the dial in the Move panel to travel around Neptune (you can also drag the view). Keep going until you've gone a third of the way round.": "Arrastra el dial del panel Mover para dar la vuelta a Neptuno (también puedes arrastrar la vista). Sigue hasta recorrer un tercio de la vuelta.",
   "Use the dial in the Move panel to fly around Neptune. Our beacon is somewhere on the far side: keep circling till you spot us.": "Usa el dial del panel Mover para volar alrededor de Neptuno. Nuestra baliza está en algún lugar de la cara oculta: sigue girando hasta vernos.",
+  "Switch between 2D and 3D": "Cambia entre 2D y 3D",
+  "The map opens tilted in 3D. Flip to the flat 2D star chart, then back to 3D.": "El mapa se abre inclinado en 3D. Pasa a la carta estelar plana en 2D y luego vuelve a 3D.",
 };
 
 /** Phrases inside computed text (distances, times…), replaced when no exact translation exists. */

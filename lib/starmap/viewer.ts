@@ -808,13 +808,17 @@ export class StarMapViewer {
   private pullTimer: ReturnType<typeof setTimeout> | null = null;
   private lockedUntil = 0;
 
-  /** Coming down from the galaxy view: start at the widest view and settle in on the origin. */
+  /** Coming down from the galaxy view: start at the widest view and settle in on the origin, tilting into 3D. */
   arriveFromSpace() {
     this.tweens = [];
     this.target.set(0, 0);
     this.phi = 0;
     this.d = D_MAX;
-    this.animate(1500, (t) => (this.d = D_MAX + (70 - D_MAX) * (1 - Math.pow(1 - t, 3))));
+    this.animate(1500, (t) => {
+      const e = 1 - Math.pow(1 - t, 3);
+      this.d = D_MAX + (70 - D_MAX) * e;
+      this.phi = 50 * DEG * e; // the map opens in 3D (the tour has you flip to 2D and back)
+    });
   }
 
   travelTo(wp: Waypoint) {
