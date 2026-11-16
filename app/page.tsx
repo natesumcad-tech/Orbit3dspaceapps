@@ -27,7 +27,7 @@ export default function Home() {
           <div className="h-brand">
             <Link href="/" className="h-logo">
               <span className="h-logo-mark" aria-hidden="true" />
-              {site.projectName}
+              {site.brand}
             </Link>
             <ResetTutorialButton />
           </div>

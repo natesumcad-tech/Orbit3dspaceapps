@@ -6,7 +6,7 @@ import "../explore/explore.css";
 import "./map.css";
 
 export const metadata: Metadata = {
-  title: "Sky Explorer | Planet X & SPHEREx",
+  title: "Sky Explorer | Orbit3D",
   description: "Fly over the whole sky: a Google Maps-style star map with a 2D and 3D view, a timeline, and waypoints you can travel to.",
 };
 

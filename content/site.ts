@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────────────────────
 
 export const site = {
+  brand: "Orbit3D",
   projectName: "Sky Explorer",
   team: "Team Big Bang",
   contactEmail: "nasaorbit3dbusiness@gmail.com",

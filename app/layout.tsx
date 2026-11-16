@@ -9,10 +9,10 @@ const body = Inter({ subsets: ["latin"], variable: "--font-body" });
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
-  title: `${site.projectName} | Planet X & SPHEREx`,
+  title: `${site.brand} | Planet X & SPHEREx`,
   description: site.tagline,
   openGraph: {
-    title: site.projectName,
+    title: site.brand,
     description: site.tagline,
     type: "website",
   },
