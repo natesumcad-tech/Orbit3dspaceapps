@@ -3,11 +3,11 @@
 const MUTE_KEY = "starmap.voice.muted";
 
 export function isVoiceMuted(): boolean {
-  if (typeof window === "undefined") return false;
+  if (typeof window === "undefined") return true;
   try {
-    return localStorage.getItem(MUTE_KEY) === "1";
+    return localStorage.getItem(MUTE_KEY) !== "0";
   } catch {
-    return false;
+    return true;
   }
 }
 
