@@ -26,6 +26,16 @@ export function stopSpeech(): void {
   } catch {}
 }
 
+function pickVoice(): SpeechSynthesisVoice | null {
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return null;
+  return (
+    voices.find((v) => /samantha/i.test(v.name)) ??
+    voices.find((v) => v.lang.startsWith("en") && v.default) ??
+    null
+  );
+}
+
 export function speak(text: string): void {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   if (isVoiceMuted()) return;
@@ -34,7 +44,10 @@ export function speak(text: string): void {
   try {
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(clean);
-    u.rate = 1.02;
+    const voice = pickVoice();
+    if (voice) u.voice = voice;
+    u.pitch = 1.12;
+    u.rate = 1.05;
     window.speechSynthesis.speak(u);
   } catch {}
 }
