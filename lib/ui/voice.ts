@@ -39,8 +39,10 @@ export function stopSpeech(): void {
 function pickVoice(): SpeechSynthesisVoice | null {
   const voices = window.speechSynthesis.getVoices();
   if (!voices.length) return null;
+  const preferred = /samantha|aria|jenny|ava|zira|victoria|karen|moira|susan|hazel|female|google us english|google uk english female/i;
   return (
-    voices.find((v) => /samantha/i.test(v.name)) ??
+    voices.find((v) => v.lang.startsWith("en") && preferred.test(v.name)) ??
+    voices.find((v) => preferred.test(v.name)) ??
     voices.find((v) => v.lang.startsWith("en") && v.default) ??
     null
   );
@@ -76,7 +78,7 @@ export function speak(text: string): void {
     const u = new SpeechSynthesisUtterance(clean);
     const voice = pickVoice();
     if (voice) u.voice = voice;
-    u.pitch = 1.12;
+    u.pitch = 1.15;
     u.rate = 1.05;
     window.speechSynthesis.speak(u);
   } catch {}
