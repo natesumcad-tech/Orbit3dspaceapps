@@ -90,7 +90,7 @@ export default function StarMapApp() {
   const [fovDeg, setFovDeg] = useState(10);
   /** Run `fn` at most every `ms` per key, always finishing with a last call once things settle. */
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const motion = useRef({ at: 0, x: 0, y: 0, d: 1, woosh: 0 });
+  const motion = useRef({ at: 0, x: 0, y: 0, d: 1, th: 0, ph: 0, pan: 0, zoom: 0, spin: 0 });
   const throttles = useRef(new Map<string, { at: number; timer: ReturnType<typeof setTimeout> | null }>());
   const throttle = (key: string, ms: number, fn: () => void) => {
     const t = throttles.current.get(key) ?? { at: 0, timer: null };
@@ -375,16 +375,30 @@ export default function StarMapApp() {
         addTranslations("es", es);
         viewer = new StarMapViewer(stageRef.current!, overlayRef.current!, sky, {
           onView: (v: View) => {
-            // a woosh when the view starts moving quickly (not every frame: once per burst)
+            // Wooshes, by what the view is doing (once per burst, not every frame): any zoom, big or
+            // tiny, gets the zoom woosh; a fast pan, a sideways rush; turning or tilting, a whirl
             {
               const now = performance.now(), m = motion.current;
-              const dt = Math.max(1, now - m.at) / 1000;
-              const speed = (Math.hypot(v.x - m.x, v.y - m.y) / Math.max(1e-6, v.radius) + Math.abs(Math.log(v.d / m.d)) * 1.5) / dt;
-              if (speed > 1.6 && now - m.woosh > 1400 && now - m.at < 200) {
-                m.woosh = now;
-                sfx.woosh(Math.min(1, speed / 6));
+              if (now - m.at < 200) {
+                const dt = Math.max(1, now - m.at) / 1000;
+                const zoom = Math.abs(Math.log(v.d / m.d));
+                const dx = v.x - m.x, dy = v.y - m.y;
+                const pan = Math.hypot(dx, dy) / Math.max(1e-6, v.radius) / dt;
+                const turn = (Math.abs(v.theta - m.th) + Math.abs(v.phi - m.ph)) / dt;
+                if (zoom > 0.003 && now - m.zoom > 420) {
+                  m.zoom = now;
+                  sfx.zoom(Math.min(1, zoom / dt / 2.5));
+                } else if (pan > 1.2 && now - m.pan > 1300) {
+                  m.pan = now;
+                  // which way it's going across the screen (the map turns with the view)
+                  const sx = dx * Math.cos(v.theta) + dy * Math.sin(v.theta);
+                  sfx.pan(Math.min(1, pan / 5), Math.sign(sx) * Math.min(1, Math.abs(sx) / Math.max(1e-6, Math.hypot(dx, dy))));
+                } else if (turn > 0.7 && now - m.spin > 1300) {
+                  m.spin = now;
+                  sfx.spin(Math.min(1, turn / 3), Math.sign(v.theta - m.th) || 1);
+                }
               }
-              Object.assign(m, { at: now, x: v.x, y: v.y, d: v.d });
+              Object.assign(m, { at: now, x: v.x, y: v.y, d: v.d, th: v.theta, ph: v.phi });
             }
             viewRef.current = v;
             // The map calls this every frame while moving: keep the page's own work light
@@ -423,7 +437,7 @@ export default function StarMapApp() {
           },
           onHover: hoverWp,
           onTravel: (wp) => {
-            sfx.woosh(1);
+            sfx.travel();
             setTravel(wp.title);
             setTimeout(() => setTravel(null), 1800);
           },
@@ -576,7 +590,10 @@ export default function StarMapApp() {
         enterSphere(stop);
         return translate(langRef.current, "◎ Opened {name} in 360°", { name: translate(langRef.current, label) });
       }
-      const fly = () => viewer.flyTo(x, y, d, false);
+      const fly = () => {
+        sfx.travel();
+        viewer.flyTo(x, y, d, false);
+      };
       if (sphereRef.current) {
         exitSphere();
         navigationTimer.current = setTimeout(fly, 1700);

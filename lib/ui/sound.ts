@@ -118,6 +118,47 @@ function hiss(at: number, dur: number, vol: number, f0: number, f1: number, q = 
   s.stop(t0 + dur + 0.05);
 }
 
+/** A random number between a and b (each woosh comes out a little different). */
+const rnd = (a: number, b: number) => a + Math.random() * (b - a);
+
+/**
+ * Moving air: noise through a sweeping filter, with optional left/right travel and a wobble (for
+ * spins). The building block for every woosh.
+ */
+function air(o: { dur: number; vol: number; f0: number; f1: number; q?: number; pan0?: number; pan1?: number; wobble?: number; low?: boolean }) {
+  const a = audio();
+  if (!a || !out) return;
+  const t0 = a.currentTime;
+  const s = noise(a), f = a.createBiquadFilter(), g = a.createGain();
+  f.type = o.low ? "lowpass" : "bandpass";
+  f.Q.value = o.q ?? 0.8;
+  f.frequency.setValueAtTime(o.f0, t0);
+  f.frequency.exponentialRampToValueAtTime(o.f1, t0 + o.dur * 0.85);
+  // swells in, then trails off
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(o.vol, t0 + o.dur * rnd(0.25, 0.45));
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + o.dur);
+  let node: AudioNode = s.connect(f).connect(g);
+  if (o.wobble) {
+    // a spinning flutter: the filter swings back and forth a few times
+    const lfo = a.createOscillator(), depth = a.createGain();
+    lfo.frequency.value = o.wobble;
+    depth.gain.value = Math.min(o.f0, o.f1) * 0.6;
+    lfo.connect(depth).connect(f.frequency);
+    lfo.start(t0);
+    lfo.stop(t0 + o.dur + 0.05);
+  }
+  if (a.createStereoPanner && (o.pan0 || o.pan1)) {
+    const p = a.createStereoPanner();
+    p.pan.setValueAtTime(o.pan0 ?? 0, t0);
+    p.pan.linearRampToValueAtTime(o.pan1 ?? 0, t0 + o.dur);
+    node = node.connect(p);
+  }
+  node.connect(out);
+  s.start(t0, Math.random());
+  s.stop(t0 + o.dur + 0.05);
+}
+
 export const sfx = {
   /** A button click: the recorded one, or a synthesized tick until it has loaded. */
   click: () => {
@@ -130,11 +171,31 @@ export const sfx = {
     for (let k = 0; k < 4; k++) hiss(k * 0.055, 0.03, 0.3 - k * 0.04, 2400 - k * 150, 1900, 3);
     tone(420, 0.2, 0.06, 0.05, "square");
   },
-  /** Moving through space; `power` 0–1 sets how big. */
-  woosh: (power = 0.6) => {
-    const p = Math.max(0.15, Math.min(1, power));
-    hiss(0, 0.45 + p * 0.35, 0.18 + p * 0.3, 260, 1500 + p * 1500, 0.7);
+  /** Panning across the sky: air rushing past from one side to the other. `dir` −1 left … 1 right. */
+  pan: (power = 0.6, dir = 0) => {
+    const p = Math.max(0.15, Math.min(1, power)), d = Math.max(-1, Math.min(1, dir));
+    const shape = Math.floor(Math.random() * 3);
+    if (shape === 0) air({ dur: rnd(0.5, 0.7) + p * 0.3, vol: 0.16 + p * 0.28, f0: rnd(300, 450), f1: rnd(1600, 2600) + p * 1200, q: rnd(0.6, 1), pan0: -d * 0.7, pan1: d * 0.8 });
+    else if (shape === 1) air({ dur: rnd(0.45, 0.6) + p * 0.25, vol: 0.14 + p * 0.26, f0: rnd(1800, 2600), f1: rnd(500, 800), q: rnd(0.8, 1.4), pan0: -d * 0.5, pan1: d });
+    else air({ dur: rnd(0.6, 0.8) + p * 0.3, vol: 0.18 + p * 0.25, f0: rnd(500, 700), f1: rnd(900, 1400), low: true, pan0: -d * 0.8, pan1: d * 0.6 });
   },
+  /** Zooming in or out, big or tiny: the same rush, just louder and longer for a bigger zoom. */
+  zoom: (power = 0.5) => {
+    const p = Math.max(0.08, Math.min(1, power));
+    air({ dur: 0.22 + p * 0.55, vol: 0.08 + p * 0.34, f0: 420 * rnd(0.9, 1.1), f1: (1400 + p * 2200) * rnd(0.9, 1.1), q: 0.9 });
+  },
+  /** Turning or tilting the view: a whirling flutter. */
+  spin: (power = 0.5, dir = 1) => {
+    const p = Math.max(0.15, Math.min(1, power));
+    air({ dur: rnd(0.55, 0.75) + p * 0.3, vol: 0.14 + p * 0.22, f0: rnd(700, 1000), f1: rnd(1300, 1900), q: rnd(1.2, 2), wobble: rnd(5, 9), pan0: -0.6 * dir, pan1: 0.6 * dir });
+  },
+  /** Flying to a place: a deep, long rush that rises as you arrive. */
+  travel: () => {
+    air({ dur: rnd(1.3, 1.6), vol: 0.42, f0: rnd(90, 130), f1: rnd(900, 1300), low: true });
+    air({ dur: rnd(1.1, 1.3), vol: 0.16, f0: rnd(600, 800), f1: rnd(2600, 3400), q: 0.7 });
+  },
+  /** (kept for older calls) a general woosh */
+  woosh: (power = 0.6) => sfx.pan(power, 0),
   /** Stepping into (or out of) a 360° view, or out to the galaxy. */
   swoop: (up = true) => {
     hiss(0, 0.9, 0.42, up ? 180 : 2600, up ? 2600 : 180, 0.6);
