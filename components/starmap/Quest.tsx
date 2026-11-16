@@ -274,7 +274,14 @@ export default function Quest({
   const [mini, setMini] = useState(false);
   const [raIn, setRaIn] = useState("");
   const [decIn, setDecIn] = useState("");
-  const [nope, setNope] = useState<string | null>(null);
+  const [nopeMsg, setNopeMsg] = useState<string | null>(null);
+  const [nopeN, setNopeN] = useState(0);
+  const nope = nopeMsg;
+  /** A wrong answer: show what's off, buzz, and shake the box (every time, even the same mistake twice). */
+  const setNope = useCallback((m: string | null) => {
+    setNopeMsg(m);
+    if (m) setNopeN((n) => n + 1);
+  }, []);
   const [flash, setFlash] = useState(false);
   // Sit in the free space at the top, clear of the controls (re-checked as panels open and close)
   const [slot, setSlot] = useState<{ left: number; top: number; width: number } | null>(null);
@@ -370,8 +377,8 @@ export default function Quest({
     if (open && !hidden && phase === "offer") sfx.incoming();
   }, [open, hidden, phase]);
   useEffect(() => {
-    if (nope) sfx.nope();
-  }, [nope]);
+    if (nopeN) sfx.nope();
+  }, [nopeN]);
   /** In a 360° view that this objective doesn't ask for (only the last one does: Neptune's). */
   const wrongSphere = seeking && !!sphere && !((check.kind === "sphere" || check.kind === "orbit") && sphere === check.stop);
   useEffect(() => {
@@ -388,6 +395,24 @@ export default function Quest({
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
   }, [seeking, check, complete]);
+
+  // Typing the wrong coordinates into the bar: buzz, and say how far off they are
+  useEffect(() => {
+    if (!seeking || check.kind !== "goto") return;
+    const on = (e: Event) => {
+      const { ra, dec } = (e as CustomEvent<{ ra: number; dec: number }>).detail;
+      if (sep(ra, dec, check.ra, check.dec) <= check.radius) return setNope(null);
+      const h = Math.floor(ra / 15), m = Math.round((ra / 15 - h) * 60);
+      setNope(
+        t("That's RA {ra}, Dec {dec}, not my fuel cloud. I need RA 4h 32m, Dec +26°: try 4h 32m +26.", {
+          ra: `${h}h ${String(m).padStart(2, "0")}m`,
+          dec: `${dec >= 0 ? "+" : "−"}${Math.abs(dec).toFixed(0)}°`,
+        }),
+      );
+    };
+    window.addEventListener("coord-jump", on);
+    return () => window.removeEventListener("coord-jump", on);
+  }, [seeking, check, setNope, t]);
 
   // Arriving at the coordinates
   useEffect(() => {
@@ -754,7 +779,11 @@ export default function Quest({
           <RaDecDiagram />
         </details>
       )}
-      {nope && <p className="q-nope">{nope}</p>}
+      {nope && (
+        <p className="q-nope" key={nopeN} role="alert">
+          <b>{t("✗ Incorrect")}</b> {nope}
+        </p>
+      )}
       <div className="q-seek-foot">
         <div className="q-progress" aria-hidden="true">
           {MISSION.map((m, k) => (

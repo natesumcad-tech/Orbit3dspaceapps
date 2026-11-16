@@ -61,6 +61,7 @@ export default function CoordSearchBar({
     e.preventDefault();
     if (!parsed || !parsed.ok) return;
     onJump(parsed.coord.ra, parsed.coord.dec, 1.5);
+    window.dispatchEvent(new CustomEvent("coord-jump", { detail: { ra: parsed.coord.ra, dec: parsed.coord.dec } }));
     setOpenPresets(false);
   };
 

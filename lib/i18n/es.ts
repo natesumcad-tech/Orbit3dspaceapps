@@ -629,6 +629,8 @@ export const ES: Record<string, string> = {
   "Use the dial in the Move panel to fly around Neptune. Our beacon is somewhere on the far side: keep circling till you spot us.": "Usa el dial del panel Mover para volar alrededor de Neptuno. Nuestra baliza está en algún lugar de la cara oculta: sigue girando hasta vernos.",
   "Switch between 2D and 3D": "Cambia entre 2D y 3D",
   "The map opens tilted in 3D. Flip to the flat 2D star chart, then back to 3D.": "El mapa se abre inclinado en 3D. Pasa a la carta estelar plana en 2D y luego vuelve a 3D.",
+  "✗ Incorrect": "✗ Incorrecto",
+  "That's RA {ra}, Dec {dec}, not my fuel cloud. I need RA 4h 32m, Dec +26°: try 4h 32m +26.": "Eso es RA {ra}, Dec {dec}, no mi nube de combustible. Necesito RA 4h 32m, Dec +26°: prueba con 4h 32m +26.",
 };
 
 /** Phrases inside computed text (distances, times…), replaced when no exact translation exists. */
