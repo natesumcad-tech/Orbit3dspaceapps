@@ -5,7 +5,7 @@ import { ES, ES_PHRASES } from "./es";
 import { ES_OBJECTS } from "./es-objects";
 
 /**
- * Languages for the Sky Explorer. Text is written in English in the code and looked up here by that
+ * Languages for Orbit3D. Text is written in English in the code and looked up here by that
  * same English text, so anything not translated yet simply stays in English.
  */
 export type Lang = "en" | "es";

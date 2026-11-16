@@ -53,7 +53,7 @@ function writeClientCache(key: string, data: ChatCachePayload) {
 }
 
 /**
- * The Sky Explorer guide: a chat panel that answers questions, asks follow-ups, and drives the map
+ * The Orbit3D guide: a chat panel that answers questions, asks follow-ups, and drives the map
  * (the server turns requests into actions like "fly to M31" or "open Saturn in 360°").
  */
 export default function Assistant({

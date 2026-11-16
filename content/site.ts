@@ -4,7 +4,7 @@
 
 export const site = {
   brand: "Orbit3D",
-  projectName: "Sky Explorer",
+  projectName: "Orbit3D",
   team: "Team Big Bang",
   contactEmail: "nasaorbit3dbusiness@gmail.com",
   tagline:
@@ -17,7 +17,7 @@ export const project = {
   problem:
     "SPHEREx is mapping the entire sky in 102 infrared colors, but its data lives in archives built for astronomers. Most people never get to see what it is exploring, or why it matters.",
   solution:
-    "Sky Explorer: a Google Maps-style map of the whole sky, streamed live from SPHEREx's real infrared data. Fly over it in 2D or 3D, switch between SPHEREx's 102 colors, step into 360° views of planets and constellations at their real distances, and blink two real SPHEREx passes taken six months apart to catch things that move: the same method you'd use to hunt for a Planet X.",
+    "Orbit3D: a Google Maps-style map of the whole sky, streamed live from SPHEREx's real infrared data. Fly over it in 2D or 3D, switch between SPHEREx's 102 colors, step into 360° views of planets and constellations at their real distances, and blink two real SPHEREx passes taken six months apart to catch things that move: the same method you'd use to hunt for a Planet X.",
   howItWorks: [
     "Fly over the whole sky, streamed live from SPHEREx data at NASA/IPAC IRSA, from a single star out to the entire Milky Way",
     "Switch SPHEREx colors, jump to exact RA/Dec coordinates, and blink real exposures six months apart to spot moving objects",

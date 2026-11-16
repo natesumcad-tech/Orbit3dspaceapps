@@ -12,7 +12,7 @@ export type Waypoint = {
   /** When it was first recorded, imaged or created. */
   date: string;
   color?: string;
-  /** A Sky Explorer stop to step inside. */
+  /** A Orbit3D stop to step inside. */
   stop?: string;
   custom?: boolean;
 };

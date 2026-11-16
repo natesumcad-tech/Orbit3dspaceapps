@@ -9,7 +9,7 @@ import { NextResponse } from "next/server";
 import { PRESET_WAYPOINTS, EPOCHS } from "@/lib/starmap/data";
 import { LANDMARKS, EXTRA_LANDMARKS } from "@/lib/explorer/landmarks";
 
-// Sky Explorer assistant: answers questions and drives the map through function calls
+// Orbit3D assistant: answers questions and drives the map through function calls
 // (fly somewhere, open a 360° view, change the date or imagery). Uses Google's Gemini API.
 // Set GEMINI_API_KEY in the environment (Vercel → Settings → Environment Variables). GEMINI_MODEL is optional.
 
@@ -28,7 +28,7 @@ const PLACES = [
 ];
 const PLACE_IDS = [...PRESET_WAYPOINTS.map((w) => w.id), ...LANDMARKS.map((l) => l.id), ...EXTRA_LANDMARKS.map((l) => l.id)];
 
-const SYSTEM = `You are the guide inside "Sky Explorer", a web app built for the NASA Space Apps Challenge (Planet X & SPHEREx).
+const SYSTEM = `You are the guide inside "Orbit3D", a web app built for the NASA Space Apps Challenge (Planet X & SPHEREx).
 The app shows a 2D/3D infrared sky map. Users can open 360° views of places, orbit planets and stars,
 explore constellations, change the timeline, and drop waypoints. SPHEREx is NASA's mission, not SpaceX.
 If the context has a "reply_language", write your reply and any follow-up questions in that language (keep tool/action arguments such as object names in English).
@@ -203,7 +203,7 @@ export async function POST(req: Request) {
         if (identification.remoteStatus === "available") coordinateSource = { id: 5, title: "SIMBAD · objects near these coordinates", url: identification.url };
         else {
           remoteIdentifyFailed = true;
-          if (identification.local.length) coordinateSource = { id: 5, title: "Sky Explorer · local sky catalogue", url: "https://orbit3d.earth/map" };
+          if (identification.local.length) coordinateSource = { id: 5, title: "Orbit3D · local sky catalogue", url: "https://orbit3d.earth/map" };
         }
       }
       const evidence = await retrieveNasa(messages.filter(m => m.role === "user").slice(-3).map(m => m.text).join(" ") + " " + context);

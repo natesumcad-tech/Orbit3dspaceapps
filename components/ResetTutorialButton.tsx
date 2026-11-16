@@ -4,7 +4,7 @@ import { useState } from "react";
 import { resetTour } from "@/components/starmap/Tutorial";
 import { resetQuest } from "@/components/starmap/Quest";
 
-/** Testing only: show the Sky Explorer tour (and the rescue mission offer) again, in this browser. */
+/** Testing only: show Orbit3D tour (and the rescue mission offer) again, in this browser. */
 export default function ResetTutorialButton() {
   const [done, setDone] = useState(false);
   return (
@@ -17,7 +17,7 @@ export default function ResetTutorialButton() {
         setDone(true);
         setTimeout(() => setDone(false), 2200);
       }}
-      title="Testing: show the Sky Explorer tour again (this browser only)"
+      title="Testing: show Orbit3D tour again (this browser only)"
     >
       {done ? "Tutorial reset ✓" : "Reset tutorial"}
     </button>

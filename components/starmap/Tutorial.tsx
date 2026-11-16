@@ -81,7 +81,7 @@ function targetRect(els: HTMLElement[]) {
 type Box = NonNullable<ReturnType<typeof targetRect>>;
 
 /**
- * First-visit walkthrough of the Sky Explorer: a small card at the top of the screen while a soft
+ * First-visit walkthrough of Orbit3D: a small card at the top of the screen while a soft
  * spotlight picks out each control. Steps that ask you to try something move on by themselves.
  */
 export default function Tutorial({

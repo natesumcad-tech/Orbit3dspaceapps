@@ -1,5 +1,5 @@
 /**
- * "Signal from the Dark": an optional rescue mission in the Sky Explorer.
+ * "Signal from the Dark": an optional rescue mission in Orbit3D.
  *
  * Commander Ada Reyes and the survey ship Wren are fiction. Everything else is real: the images are
  * SPHEREx data cut live from IRSA, star distances and positions come from the HYG/Hipparcos catalogue,

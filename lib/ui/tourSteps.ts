@@ -1,4 +1,4 @@
-/** The Sky Explorer tour's steps. */
+/** The Orbit3D tour's steps. */
 
 export type Wait = "move" | "hover" | "modes" | "sphere" | "zoomout";
 export type Step = {
@@ -14,7 +14,7 @@ export type Step = {
 
 export const STEPS: Step[] = [
   {
-    title: "Welcome to the Sky Explorer",
+    title: "Welcome to Orbit3D",
     body: "The whole sky, built from NASA's SPHEREx telescope. This quick tour takes under a minute.",
   },
   {

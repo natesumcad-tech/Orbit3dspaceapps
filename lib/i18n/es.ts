@@ -4,7 +4,7 @@
  */
 export const ES: Record<string, string> = {
   // ── Tour ──
-  "Welcome to the Sky Explorer": "Bienvenido al Explorador del Cielo",
+  "Welcome to Orbit3D": "Te damos la bienvenida a Orbit3D",
   "The whole sky, built from NASA's SPHEREx telescope. This quick tour takes under a minute.":
     "Todo el cielo, construido con el telescopio SPHEREx de la NASA. Este recorrido rápido dura menos de un minuto.",
   "Look around": "Mira a tu alrededor",
@@ -299,7 +299,7 @@ export const ES: Record<string, string> = {
   "The blink service didn't answer properly.": "El servicio de parpadeo no respondió correctamente.",
   "Loading IRSA tiles": "Cargando teselas de IRSA",
   "Your browser couldn't start the 3D map. Try a recent version of Chrome, Edge, Firefox or Safari.": "Tu navegador no pudo iniciar el mapa 3D. Prueba una versión reciente de Chrome, Edge, Firefox o Safari.",
-  "Sky Explorer: an interactive map of the infrared sky": "Explorador del cielo: un mapa interactivo del cielo infrarrojo",
+  "Orbit3D: an interactive map of the infrared sky": "Orbit3D: un mapa interactivo del cielo infrarrojo",
   "Skip intro →": "Saltar intro →",
   "Drag to turn · scroll to zoom. Zoom into the Sun to see its constellations.": "Arrastra para girar · desplaza para hacer zoom. Acércate al Sol para ver sus constelaciones.",
   "The Milky Way here is an illustration of its shape; the nearby stars are real (HYG catalogue).": "La Vía Láctea es aquí una ilustración de su forma; las estrellas cercanas son reales (catálogo HYG).",

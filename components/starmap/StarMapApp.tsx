@@ -772,7 +772,7 @@ export default function StarMapApp() {
   const ep = EPOCHS[Math.min(epoch, EPOCHS.length - 1)];
 
   return (
-    <div ref={rootRef} role="main" aria-label={t("Sky Explorer: an interactive map of the infrared sky")} className={`mv ${toolsOpen ? "tools-open" : ""} ${sphere && !closing ? "in-sphere" : ""} ${cosmic ? "in-cosmic" : ""}`}>
+    <div ref={rootRef} role="main" aria-label={t("Orbit3D: an interactive map of the infrared sky")} className={`mv ${toolsOpen ? "tools-open" : ""} ${sphere && !closing ? "in-sphere" : ""} ${cosmic ? "in-cosmic" : ""}`}>
       <div ref={stageRef} className="mv-stage">
         <div ref={overlayRef} className="mv-overlay" />
       </div>

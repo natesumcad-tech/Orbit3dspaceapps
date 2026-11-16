@@ -48,7 +48,7 @@ export default function Home() {
           </p>
           <div className="h-ctas">
             <Link transitionTypes={["site-navigation"]} href="/map" className="h-btn">
-              <span aria-hidden="true">◎</span> Open the Sky Explorer
+              <span aria-hidden="true">◎</span> Open Orbit3D
             </Link>
             <a href="#how" className="h-btn-ghost">
               How it works ↓
@@ -59,9 +59,9 @@ export default function Home() {
         <div className="h-stage">
           <div className="h-wallpaper" aria-hidden="true" />
           <div className="h-pill" aria-hidden="true">
-            <span className="h-pill-dot" /> Sky Explorer <span className="h-pill-key">Esc</span> <span className="h-pill-sq" />
+            <span className="h-pill-dot" /> Orbit3D <span className="h-pill-key">Esc</span> <span className="h-pill-sq" />
           </div>
-          <Link href="/map?stop=saturn" className="h-window" aria-label="Open the Saturn stop in the Sky Explorer">
+          <Link href="/map?stop=saturn" className="h-window" aria-label="Open the Saturn stop in Orbit3D">
             <div className="h-chrome">
               <span />
               <span />
@@ -70,7 +70,7 @@ export default function Home() {
             </div>
             <Image
               src="/shots/explorer-saturn.jpg"
-              alt="The Sky Explorer inside the Saturn sphere, with a hotspot card about Saturn's rings open"
+              alt="Orbit3D inside the Saturn 360° view, with a hotspot card about Saturn's rings open"
               width={2560}
               height={1520}
               priority
@@ -324,7 +324,7 @@ export default function Home() {
         <section className="h-final">
           <p className="h-final-label">Runs in your browser · no install · live data from IRSA</p>
           <h2>
-            Open the <em>Sky Explorer</em>
+            Open <em>Orbit3D</em>
           </h2>
           <Link transitionTypes={["site-navigation"]} href="/map" className="h-btn">
             <span aria-hidden="true">◎</span> Start at the origin

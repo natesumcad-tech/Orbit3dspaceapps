@@ -500,7 +500,7 @@
 .home .h-final h2, .home .h-final em { color: #171512; }
 .h-final-label { color: #625b50; }
 
-/* Testing: reset the Sky Explorer tour (next to the team name) */
+/* Testing: reset Orbit3D tour (next to the team name) */
 .h-brand { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 .h-reset-tour {
   font: inherit; font-size: 0.72rem; font-weight: 600; cursor: pointer; white-space: nowrap;

@@ -50,7 +50,7 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:3000` (or `http://localhost:3000/map` for the Sky Explorer).
+Open `http://localhost:3000` (or `http://localhost:3000/map` for Orbit3D).
 
 ### Environment Variables
 
@@ -64,7 +64,7 @@ Create `.env.local` in the project root (or set in **Vercel → Settings → Env
 ```
 app/
   api/chat/route.ts         # Gemini API endpoint with map-control tools
-  map/                      # 2D/3D Sky Explorer page & styles
+  map/                      # 2D/3D Orbit3D page & styles
   explore/                  # 360° view styles
   page.tsx                  # Landing page
 components/
@@ -93,7 +93,7 @@ node tests/zoom-policy.test.mjs
 
 ## AI Usage
 
-Artificial intelligence (Anthropic's Claude) was used to help write the code for this project, along with Google Gemini for the "Sky Explorer" chatbot.
+Artificial intelligence (Anthropic's Claude) was used to help write the code for this project, along with Google Gemini for the "Orbit3D" chatbot.
 
 ## License
 
