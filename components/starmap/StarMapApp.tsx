@@ -146,6 +146,24 @@ export default function StarMapApp() {
   useEffect(() => () => void (questTimer.current && clearTimeout(questTimer.current)), []);
   // The page is a fixed, full-screen map: if focusing something ever scrolls it, snap straight back
   const rootRef = useRef<HTMLDivElement>(null);
+  // The Controls panel sits right under the top-left panels (coordinates, Blink), whatever their height
+  const topLeftRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = topLeftRef.current, root = rootRef.current;
+    if (!el || !root) return;
+    const place = () => {
+      const r = el.getBoundingClientRect(), rr = root.getBoundingClientRect();
+      root.style.setProperty("--tl-bottom", `${Math.round(r.bottom - rr.top)}px`);
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(el);
+    window.addEventListener("resize", place);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", place);
+    };
+  }, []);
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
@@ -837,7 +855,7 @@ export default function StarMapApp() {
       {error && <div className="mv-loading">{error}</div>}
 
       {/* Top-left: title & 2D/3D */}
-      <div className="mv-top-left">
+      <div ref={topLeftRef} className="mv-top-left">
         <div className="mv-top-row">
           <SiteTabs active="explorer" />
         <div className="mv-glass mv-seg" role="tablist" aria-label={t("View mode")}>

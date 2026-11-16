@@ -1421,3 +1421,8 @@ button.mv-cc:focus-visible, button.mv-coord-dec:focus-visible { outline: 2px sol
 @media (min-width: 761px) {
   .mv-help { max-height: calc(100vh - 440px); min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
 }
+
+/* Computers: Controls starts just below where the top-left panels end (a small gap), and scrolls if the screen is short */
+@media (min-width: 761px) {
+  .mv-help { top: calc(var(--tl-bottom, 290px) + 8px); bottom: auto !important; max-height: calc(100vh - var(--tl-bottom, 290px) - 30px); }
+}
