@@ -91,10 +91,6 @@ npx tsc --noEmit
 node tests/zoom-policy.test.mjs
 ```
 
-## AI Usage
-
-Artificial intelligence (Anthropic's Claude) was used to help write the code for this project, along with Google Gemini for the "Orbit3D" chatbot.
-
 ## License
 
 MIT
