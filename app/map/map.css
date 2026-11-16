@@ -1338,7 +1338,7 @@ button.q-chip:hover { filter: brightness(1.08); }
 .qa-bob svg { display: block; }
 @keyframes qa-bob { from { transform: translateY(-12px); } to { transform: translateY(0); } }
 @keyframes qa-nudge { from { transform: translateY(-5px); } to { transform: translateY(3px); } }
-.qa-tag { position: absolute; left: 0; top: 0; white-space: nowrap; font: 700 12px/1 var(--font-sans, system-ui, sans-serif); color: #fff6d6; background: rgba(28, 18, 4, .82); border: 1px solid #ffd23f; border-radius: 999px; padding: 4px 9px; }
+.qa-tag { position: absolute; left: 0; top: 0; white-space: nowrap; font: 700 12px/1 var(--font-sans, system-ui, sans-serif); color: #fff6d6; background: rgba(28, 18, 4, .82); border: 1px solid #ffe873; border-radius: 999px; padding: 4px 9px; }
 .qa-tag:empty { display: none; }
 @media (prefers-reduced-motion: reduce) { .qa-bob { animation: none; } }
 
@@ -1348,6 +1348,6 @@ button.q-chip:hover { filter: brightness(1.08); }
 
 /* Ring around the quest destination: a yellow ring pulsing outward (circle for a point, pill for a control) */
 .qa-ring { position: fixed; left: 0; top: 0; z-index: 59; pointer-events: none; }
-.qa-ring i { position: absolute; inset: 0; border: 3px solid #ffd400; border-radius: 999px; animation: qa-pulse 1.3s ease-out infinite; }
+.qa-ring i { position: absolute; inset: 0; border: 3px solid #ffe873; border-radius: 999px; animation: qa-pulse 1.3s ease-out infinite; }
 @keyframes qa-pulse { 0% { transform: scale(.6); opacity: 1; } 100% { transform: scale(1.8); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .qa-ring i { animation: none; } }

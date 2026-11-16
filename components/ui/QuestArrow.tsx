@@ -96,7 +96,7 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
         <div className="qa-bob">
           <svg viewBox="0 0 40 36" width="40" height="36">
             {/* waypoint triangle pointing down: tip at the bottom centre */}
-            <path d="M3 3 H37 L20 33 Z" fill="#ffd400" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M3 3 H37 L20 33 Z" fill="#ffe873" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
           </svg>
         </div>
       </div>
