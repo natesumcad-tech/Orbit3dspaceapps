@@ -1,6 +1,7 @@
 "use client";
 
 const MUTE_KEY = "starmap.voice.muted";
+let currentAudio: HTMLAudioElement | null = null;
 
 export function isVoiceMuted(): boolean {
   if (typeof window === "undefined") return true;
@@ -20,10 +21,19 @@ export function setVoiceMuted(muted: boolean): void {
 }
 
 export function stopSpeech(): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  try {
-    window.speechSynthesis.cancel();
-  } catch {}
+  if (typeof window === "undefined") return;
+  if (currentAudio) {
+    try {
+      currentAudio.pause();
+      currentAudio.currentTime = 0;
+    } catch {}
+    currentAudio = null;
+  }
+  if ("speechSynthesis" in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch {}
+  }
 }
 
 function pickVoice(): SpeechSynthesisVoice | null {
@@ -34,6 +44,26 @@ function pickVoice(): SpeechSynthesisVoice | null {
     voices.find((v) => v.lang.startsWith("en") && v.default) ??
     null
   );
+}
+
+export function playAudio(src: string, fallbackText?: string): void {
+  if (typeof window === "undefined") return;
+  if (isVoiceMuted()) return;
+  stopSpeech();
+  try {
+    const audio = new Audio(src);
+    currentAudio = audio;
+    audio.onerror = () => {
+      if (currentAudio === audio) currentAudio = null;
+      if (fallbackText) speak(fallbackText);
+    };
+    audio.play().catch(() => {
+      if (currentAudio === audio) currentAudio = null;
+      if (fallbackText) speak(fallbackText);
+    });
+  } catch {
+    if (fallbackText) speak(fallbackText);
+  }
 }
 
 export function speak(text: string): void {
