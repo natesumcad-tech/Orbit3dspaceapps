@@ -82,16 +82,8 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
       <div ref={turn} className="qa-turn">
         <div className="qa-bob">
           <svg viewBox="0 0 48 60" width="48" height="60">
-            <defs>
-              <linearGradient id="qa-fill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stopColor="#fff2a8" />
-                <stop offset="0.45" stopColor="#ffd23f" />
-                <stop offset="1" stopColor="#f08a12" />
-              </linearGradient>
-            </defs>
             {/* chunky arrow pointing down: tip at the bottom centre */}
-            <path d="M15 3 H33 V27 H45 L24 57 L3 27 H15 Z" fill="url(#qa-fill)" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
-            <path d="M19 7 H24 V30" stroke="#fff" strokeOpacity=".7" strokeWidth="3" strokeLinecap="round" fill="none" />
+            <path d="M15 3 H33 V27 H45 L24 57 L3 27 H15 Z" fill="#ffd400" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
           </svg>
         </div>
       </div>

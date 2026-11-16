@@ -591,6 +591,10 @@ export const ES: Record<string, string> = {
   "is like longitude: how far east around the sky, measured in hours (0h to 24h) because the sky turns once a day.": "es como la longitud: cuánto hacia el este alrededor del cielo, medida en horas (de 0h a 24h) porque el cielo da una vuelta al día.",
   "Checked against NASA/IPAC IRSA's live catalogue at {time}. When IRSA publishes new SPHEREx data, this map switches to it automatically.": "Comprobado con el catálogo en directo de NASA/IPAC IRSA a las {time}. Cuando IRSA publica nuevos datos de SPHEREx, este mapa cambia a ellos automáticamente.",
   "Live from IRSA · {name} updated {date}": "En directo desde IRSA · {name} actualizado el {date}",
+  "Wrong way, explorer!": "¡Te has desviado!",
+  "You've stepped into a 360° view, but my signal is on the sky map.": "Has entrado en una vista 360°, pero mi señal está en el mapa del cielo.",
+  "Press Esc, or the arrowed “Back to the map” button, to come back out. Then:": "Pulsa Esc, o el botón «Volver al mapa» que señala la flecha, para salir. Después:",
+  "Take me back to the map": "Llévame de vuelta al mapa",
 };
 
 /** Phrases inside computed text (distances, times…), replaced when no exact translation exists. */

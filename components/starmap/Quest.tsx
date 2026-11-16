@@ -230,6 +230,7 @@ export default function Quest({
   planet,
   onCenter,
   toScreen,
+  onExitSphere,
   onClose,
 }: {
   open: boolean;
@@ -246,6 +247,8 @@ export default function Quest({
   onCenter: (name: string) => void;
   /** Screen position of an RA/Dec on the map. */
   toScreen: (ra: number, dec: number) => { x: number; y: number; behind: boolean } | null;
+  /** Leave the 360° view (back to the map). */
+  onExitSphere: () => void;
   onClose: () => void;
 }) {
   const t = useT();
@@ -347,6 +350,8 @@ export default function Quest({
 
   const seeking = open && phase === "seek" && !saved.done;
   const check = step.check;
+  /** In a 360° view that this objective doesn't ask for (only the last one does: Neptune's). */
+  const wrongSphere = seeking && !!sphere && !(check.kind === "sphere" && sphere === check.stop);
 
   // Clicking a quest target on the map
   useEffect(() => {
@@ -420,7 +425,7 @@ export default function Quest({
 
   /** The quest arrow: where this objective sends you (a place on the map, or the control to use). */
   const locate = (): ArrowSpot | null => {
-    if (!seeking || sphere) return null;
+    if (!seeking) return null;
     const ui = (...sels: string[]): ArrowSpot | null => {
       for (const sel of sels) {
         const el = document.querySelector<HTMLElement>(sel);
@@ -429,6 +434,8 @@ export default function Quest({
       }
       return null;
     };
+    // Stepped inside a 360° view this objective doesn't need: point the way back out
+    if (sphere) return wrongSphere ? ui(".xp-exit") : null;
     const place = (name: string, at: { ra: number; dec: number } | null): ArrowSpot | null => {
       if (!at) return null;
       const s = toScreen(at.ra, at.dec);
@@ -563,6 +570,30 @@ export default function Quest({
   }
 
   // Seeking: the objective bar
+  // Inside a 360° view the objective doesn't call for: the commander turns them around
+  if (wrongSphere)
+    return (
+      <>
+        <QuestArrow locate={locate} />
+        <div style={pos} className={`q-card q-seek q-wrong${where}`} role="alert">
+          <div className="q-who">
+            <Portrait />
+            <div>
+              <span className="q-kicker">{t("Wrong way, explorer!")}</span>
+              <b className="q-obj">{t("You've stepped into a 360° view, but my signal is on the sky map.")}</b>
+            </div>
+          </div>
+          <p className="q-format">
+            {t("Press Esc, or the arrowed “Back to the map” button, to come back out. Then:")} <b>{t(step.objective)}</b>
+          </p>
+          <div className="q-actions">
+            <button className="q-go" onClick={onExitSphere}>
+              {t("Take me back to the map")}
+            </button>
+          </div>
+        </div>
+      </>
+    );
   if (mini || sphere)
     return (
       <>

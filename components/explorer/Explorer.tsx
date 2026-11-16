@@ -318,7 +318,7 @@ export default function SphereView({ stopId, onStop, onExit, onAsk }: { onAsk?: 
                 </div>
               )}
               {onAsk && <button className="xp-back" onClick={() => onAsk(current.title)}>{t("Ask about {name}", { name: t(current.title) })}</button>}
-              <button className="xp-back" onClick={onExit}>
+              <button className="xp-back xp-exit" onClick={onExit}>
                 {t("Back to the map (Esc)")}
               </button>
             </Collapsible>
