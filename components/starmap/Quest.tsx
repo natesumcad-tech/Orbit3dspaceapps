@@ -448,7 +448,7 @@ export default function Quest({
     if (check.kind === "report") {
       const s = star(check.star);
       if (s && sep(center.ra, center.dec, s.ra, s.dec) > 1) return place(check.star, s);
-      return ui(".mv-coord-center");
+      return ui(".mv-coord-center", ".mv-tools-btn"); // on phones the coordinates live behind Tools
     }
     if (check.kind === "goto") return ui(".mv-coord-go", ".mv-coord-form", ".mv-tools-btn");
     if (check.kind === "band") return ui(".mv-ir-presets", ".mv-minicard");

@@ -285,6 +285,7 @@ export default function SphereView({ stopId, onStop, onExit, onAsk }: { onAsk?: 
           <>
             <Collapsible
               id="sphere-info"
+              closedOnSmall
               className="xp-card"
               title={
                 <>

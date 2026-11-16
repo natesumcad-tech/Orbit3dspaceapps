@@ -1364,3 +1364,25 @@ button.q-chip:hover { filter: brightness(1.08); }
 /* 'always up to date' note under the timeline */
 .mv-tl-live { margin: 8px 0 0; font-size: 0.74rem; line-height: 1.45; color: var(--muted); }
 .mv-tl-live i { display: inline-block; vertical-align: middle; margin: 0 4px 2px 0; width: 7px; height: 7px; border-radius: 50%; background: #3f8f5f; box-shadow: 0 0 0 3px rgba(63, 143, 95, .2); }
+
+/* ── Phones: one thing at a time, nothing poking through anything else ── */
+@media (max-width: 600px) {
+  /* the intro's Skip sits low on the right instead of on top of 2D/3D */
+  .cv-skip { top: auto; bottom: 112px; right: 12px; }
+  /* Tools (coordinates + Blink) opens as a sheet: the right-hand column steps aside */
+  .mv.tools-open .mv-top-right, .mv.tools-open .mv-zoom { visibility: hidden; }
+  /* Search: a full-width panel under the buttons */
+  .mv-search.open .mv-search-panel { position: fixed; left: 8px; right: 8px; top: 112px; width: auto; max-width: none; z-index: 70; }
+  .mv:has(.mv-search.open) .mv-zoom, .mv:has(.mv-search.open) .mv-top-right { visibility: hidden; }
+  /* The mission docks at the bottom, above the timeline, and scrolls if it's long */
+  .q-card { left: 8px !important; right: 8px; width: auto !important; top: auto !important; bottom: 72px; max-height: 50vh; overflow-y: auto; overscroll-behavior: contain; }
+  .q-mini { top: auto !important; bottom: 72px; left: 50% !important; transform: translateX(-50%); max-width: calc(100vw - 16px); }
+  .mv:has(.mv-search.open) .q-mini { display: none; }
+  /* Inside a 360° view: only the map tabs and 2D/3D stay up top, so the view's own toolbar has room */
+  .mv.in-sphere .mv-ask, .mv.in-sphere .mv-search, .mv.in-sphere .mv-tools-btn { display: none !important; }
+  /* bigger, easier taps */
+  .mv-zoom .mv-glass { min-width: 44px; min-height: 44px; }
+  .q-actions button, .q-go, .q-ghost, .q-chip-btn, .q-link { min-height: 40px; }
+  .q-form input { font-size: 16px; } /* 16px stops iPhones zooming the page when you type */
+  .mv-coord-input, .mv-search-panel input, .mv-ai textarea { font-size: 16px; }
+}
