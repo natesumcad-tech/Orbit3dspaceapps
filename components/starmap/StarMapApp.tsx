@@ -29,7 +29,7 @@ import { LangSwitch, addTranslations, translate, useLang, useT, useTV } from "@/
 
 const STORE_WP = "starmap.waypoints.v1";
 /** How long after the tutorial (or landing, for returning visitors) the optional mission is offered. */
-const QUEST_DELAY = 7000;
+const QUEST_DELAY = 5000;
 const STORE_SETTINGS = "starmap.settings.v2"; // v2: the measurement grid is on by default
 
 function load<T>(key: string, fallback: T): T {
