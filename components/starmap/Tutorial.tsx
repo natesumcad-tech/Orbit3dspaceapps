@@ -266,7 +266,7 @@ export default function Tutorial({
         !step.wait && <div className="tour-dim" aria-hidden="true" />
       )}
 
-      {rect && <QuestArrow locate={() => ({ x: rect.left + rect.width / 2, top: rect.top - pad, bottom: rect.top + rect.height + pad })} />}
+      {rect && <QuestArrow locate={() => ({ x: rect.left + rect.width / 2, top: rect.top - pad, bottom: rect.top + rect.height + pad, w: rect.width + pad * 2 })} />}
 
       <div ref={card} className="tour-card" style={{ top, left, width: cw }} role="dialog" aria-labelledby="tour-title" aria-describedby="tour-body">
         <div className="tour-bar" aria-hidden="true">

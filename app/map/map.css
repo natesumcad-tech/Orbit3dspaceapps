@@ -1331,9 +1331,9 @@ button.q-chip:hover { filter: brightness(1.08); }
 
 /* ── Quest arrow (game-style): bobs over the destination, or points the way from the screen edge ── */
 .qa { position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none; width: 0; height: 0; }
-.qa-turn { position: absolute; left: -24px; top: -60px; width: 48px; height: 60px; transform-origin: 24px 60px; }
-.qa.edge .qa-turn { top: -30px; transform-origin: 24px 30px; }
-.qa-bob { width: 48px; height: 60px; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .55)); animation: qa-bob .75s ease-in-out infinite alternate; }
+.qa-turn { position: absolute; left: -18px; top: -44px; width: 36px; height: 44px; transform-origin: 18px 44px; }
+.qa.edge .qa-turn { top: -22px; transform-origin: 18px 22px; }
+.qa-bob { width: 36px; height: 44px; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, .55)); animation: qa-bob .75s ease-in-out infinite alternate; }
 .qa.edge .qa-bob { animation-name: qa-nudge; }
 @keyframes qa-bob { from { transform: translateY(-14px); } to { transform: translateY(0); } }
 @keyframes qa-nudge { from { transform: translateY(-6px); } to { transform: translateY(4px); } }
@@ -1344,3 +1344,9 @@ button.q-chip:hover { filter: brightness(1.08); }
 /* Wrong turn into a 360° view during the mission */
 .q-card.q-wrong { z-index: 56; border-color: #ffd400; box-shadow: 0 0 0 2px #ffd400, 0 18px 40px -16px rgba(20, 14, 6, .7); }
 .q-wrong .q-kicker { color: #a15c00; }
+
+/* Ring around the quest destination: a solid yellow outline plus a pulse spreading out from it */
+.qa-ring { position: fixed; left: 0; top: 0; z-index: 59; pointer-events: none; border: 3px solid #ffd400; border-radius: 999px; box-shadow: 0 0 0 2px rgba(58, 34, 5, .55); }
+.qa-ring i { position: absolute; inset: -3px; border: 3px solid #ffd400; border-radius: inherit; animation: qa-pulse 1.3s ease-out infinite; }
+@keyframes qa-pulse { from { transform: scale(1); opacity: .9; } to { transform: scale(1.6); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .qa-ring i { animation: none; opacity: 0; } }

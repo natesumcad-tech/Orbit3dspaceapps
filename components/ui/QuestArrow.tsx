@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
  * hovers just above it, or below when there's no room). `behind` marks a point projected from behind
  * the camera, whose direction is reversed.
  */
-export type ArrowSpot = { x: number; top: number; bottom: number; behind?: boolean; label?: string };
+export type ArrowSpot = { x: number; top: number; bottom: number; behind?: boolean; label?: string; /** width of a control to ring (points get a circle) */ w?: number };
 
 const M = 54; // keep the arrow this far inside the screen edges
 // Pinned to the edge, it stays clear of the toolbars along the top and the timeline at the bottom
@@ -22,6 +22,7 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
   const root = useRef<HTMLDivElement>(null);
   const turn = useRef<HTMLDivElement>(null);
   const tag = useRef<HTMLSpanElement>(null);
+  const ring = useRef<HTMLDivElement>(null);
   const locateRef = useRef(locate);
   locateRef.current = locate;
 
@@ -30,11 +31,11 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
     let last = "";
     const tick = () => {
       raf = requestAnimationFrame(tick);
-      const el = root.current, rot = turn.current, label = tag.current;
-      if (!el || !rot || !label) return;
+      const el = root.current, rot = turn.current, label = tag.current, rg = ring.current;
+      if (!el || !rot || !label || !rg) return;
       const p = locateRef.current();
       if (!p) {
-        if (last !== "off") (el.style.display = "none"), (last = "off");
+        if (last !== "off") (el.style.display = "none"), (rg.style.display = "none"), (last = "off");
         return;
       }
       const W = window.innerWidth, H = window.innerHeight;
@@ -59,9 +60,17 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
         deg = (Math.atan2(dy, dx) * 180) / Math.PI - 90; // the arrow is drawn pointing down
         mode = "edge";
       }
-      const key = `${mode}|${x.toFixed(0)}|${y.toFixed(0)}|${deg.toFixed(0)}|${p.label ?? ""}`;
+      const key = `${mode}|${x.toFixed(0)}|${y.toFixed(0)}|${deg.toFixed(0)}|${p.label ?? ""}|${p.w ?? 0}|${p.bottom.toFixed(0)}`;
       if (key === last) return;
       last = key;
+      // a pulsing ring around the destination while it's on screen (a circle for a point, a pill for a control)
+      if (onScreen) {
+        const h = Math.max(36, p.bottom - p.top + 14), w = Math.max(h, (p.w ?? 0) + 14);
+        rg.style.display = "";
+        rg.style.width = `${w.toFixed(0)}px`;
+        rg.style.height = `${h.toFixed(0)}px`;
+        rg.style.transform = `translate(${(p.x - w / 2).toFixed(1)}px, ${((p.top + p.bottom) / 2 - h / 2).toFixed(1)}px)`;
+      } else rg.style.display = "none";
       el.style.display = "";
       el.className = `qa ${mode}`;
       el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
@@ -69,7 +78,7 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
       label.textContent = mode === "edge" ? (p.label ?? "") : "";
       if (mode === "edge") {
         // the name sits on the screen side of the arrow, so it never runs off the edge
-        const a = ((deg + 90) * Math.PI) / 180, ox = -Math.cos(a) * 62, oy = -Math.sin(a) * 50;
+        const a = ((deg + 90) * Math.PI) / 180, ox = -Math.cos(a) * 52, oy = -Math.sin(a) * 40;
         label.style.transform = `translate(calc(-50% + ${ox.toFixed(0)}px), calc(-50% + ${oy.toFixed(0)}px))`;
       }
     };
@@ -78,16 +87,21 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
   }, []);
 
   return (
+    <>
+    <div ref={ring} className="qa-ring" style={{ display: "none" }} aria-hidden="true">
+      <i />
+    </div>
     <div ref={root} className="qa" style={{ display: "none" }} aria-hidden="true">
       <div ref={turn} className="qa-turn">
         <div className="qa-bob">
-          <svg viewBox="0 0 48 60" width="48" height="60">
-            {/* chunky arrow pointing down: tip at the bottom centre */}
-            <path d="M15 3 H33 V27 H45 L24 57 L3 27 H15 Z" fill="#ffd400" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
+          <svg viewBox="0 0 36 44" width="36" height="44">
+            {/* waypoint triangle pointing down: tip at the bottom centre */}
+            <path d="M4 4 H32 L18 40 Z" fill="#ffd400" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
           </svg>
         </div>
       </div>
       <span ref={tag} className="qa-tag" />
     </div>
+    </>
   );
 }

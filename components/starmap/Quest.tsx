@@ -430,7 +430,7 @@ export default function Quest({
       for (const sel of sels) {
         const el = document.querySelector<HTMLElement>(sel);
         const r = el?.getBoundingClientRect();
-        if (r && r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight) return { x: r.left + r.width / 2, top: r.top, bottom: r.bottom };
+        if (r && r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight) return { x: r.left + r.width / 2, top: r.top, bottom: r.bottom, w: r.width };
       }
       return null;
     };
