@@ -536,3 +536,11 @@
 .h-video { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #0b0a08; margin-top: 10px; }
 .h-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .h-writeup-details p + p { margin-top: 14px !important; }
+
+/* Inner pages (Project, Credits): a short hero, the homepage's sky kept inside it */
+.sub-hero { padding-bottom: 20px; }
+.sub-hero .h-sky { height: 100%; }
+.sub-hero .h-hero-copy { margin-top: 56px; }
+.sub-main { position: relative; z-index: 1; }
+/* Phones: the five tabs scroll sideways instead of squashing */
+@media (max-width: 600px) { .home .site-tabs { max-width: calc(100vw - 32px); overflow-x: auto; scrollbar-width: none; } .home .site-tabs a { padding: 9px 12px; } }

@@ -857,7 +857,7 @@ export default function StarMapApp() {
       {/* Top-left: title & 2D/3D */}
       <div ref={topLeftRef} className="mv-top-left">
         <div className="mv-top-row">
-          <SiteTabs active="explorer" />
+          <SiteTabs active="explorer" compact />
         <div className="mv-glass mv-seg" role="tablist" aria-label={t("View mode")}>
           <button
             role="tab"

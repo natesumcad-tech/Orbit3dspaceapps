@@ -4,7 +4,7 @@ import Link from "next/link";
 import SiteTabs from "@/components/SiteTabs";
 import ScrollReveal from "@/components/ScrollReveal";
 import SpectrumExplorer from "@/components/SpectrumExplorer";
-import { site, project, mission, resources, credits, aiUse, access, writeup } from "@/content/site";
+import { site, mission } from "@/content/site";
 import "./home.css";
 
 // 102 bars: one for each SPHEREx band, shaped like a gentle spectrum
@@ -222,119 +222,6 @@ export default function Home() {
           </dl>
         </section>
 
-        {/* ── Project ── */}
-        <section id="project" className="h-section">
-          <h2 className="h-split center">
-            {site.brand} <span>05 · The project</span>
-          </h2>
-          <div className="h-writeup">
-            <div className="h-box">
-              <h3>Summary</h3>
-              <p>{writeup.summary}</p>
-              <p className="h-writeup-link">
-                <b>Project</b> <a href={writeup.projectUrl}>{writeup.projectUrl.replace("https://", "")}</a>
-              </p>
-            </div>
-            <div className="h-box">
-              <h3>Project Demonstration</h3>
-              <div className="h-video">
-                <iframe
-                  src={writeup.demoEmbed}
-                  title="Orbit3D project demonstration video"
-                  loading="lazy"
-                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-              <p className="h-writeup-link">
-                <a href={writeup.demoUrl} target="_blank" rel="noreferrer">
-                  Watch on YouTube ↗
-                </a>
-              </p>
-            </div>
-            <div className="h-box h-writeup-details">
-              <h3>Project Details</h3>
-              {writeup.details.map((d) => (
-                <p key={d.slice(0, 40)}>{d}</p>
-              ))}
-              <h3>Built with</h3>
-              <ul className="h-tags">
-                {project.tools.map((t) => (
-                  <li key={t}>{t}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* ── Accessible to everyone ── */}
-        <section id="access" className="h-section">
-          <h2 className="h-split center">
-            For anyone, anywhere <span>06 · Access</span>
-          </h2>
-          <div className="h-access">
-            <h3>{access.title}</h3>
-            <p className="h-access-lead">{access.lead}</p>
-            <ul>
-              {access.points.map((pt) => (
-                <li key={pt.title}>
-                  <b>{pt.title}</b>
-                  <span>{pt.text}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="h-access-close">{access.close}</p>
-          </div>
-        </section>
-
-        {/* ── Resources + final CTA ── */}
-        <section className="h-section">
-          <h2 className="h-split center">
-            Data & references <span>07 · Sources</span>
-          </h2>
-          <ul className="h-resources">
-            {resources.map((r) => (
-              <li key={r.url}>
-                <a href={r.url} target="_blank" rel="noreferrer">
-                  <b>{r.title}</b>
-                  <span>{r.note} ↗</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* ── Credits & AI use ── */}
-        <section id="credits" className="h-section">
-          <h2 className="h-split center">
-            Credits <span>08 · Data, code & AI</span>
-          </h2>
-          <div className="h-project">
-            <div className="h-box">
-              <h3>Data and acknowledgments</h3>
-              <ul className="h-credits">
-                {credits.map((c) => (
-                  <li key={c.title}>
-                    <b>{c.url ? <a href={c.url} target="_blank" rel="noreferrer">{c.title}</a> : c.title}</b>
-                    <span>{c.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="h-box">
-              <h3>How AI was used</h3>
-              <ul className="h-credits">
-                {aiUse.map((c) => (
-                  <li key={c.title}>
-                    <b>{c.title}</b>
-                    <span>{c.text}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
-
         <section className="h-final">
           <p className="h-final-label">Runs in your browser · no install · live data from IRSA</p>
           <h2>
@@ -351,7 +238,7 @@ export default function Home() {
           Built by {site.team} for the {site.event}.
         </span>
         <span>
-          <Link href="/contact">Contact us</Link> · <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> · <a href="#credits">Credits</a>
+          <Link href="/contact">Contact us</Link> · <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a> · <Link href="/credits">Credits</Link>
         </span>
         <span className="h-fine">
           SPHEREx mission information courtesy of NASA/JPL-Caltech. A student hackathon project, not an official NASA website.
