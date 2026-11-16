@@ -111,6 +111,9 @@ export default function Tutorial({
   const [cardH, setCardH] = useState(0);
   const [modeFrom, setModeFrom] = useState<"2d" | "3d">("2d"); // the view the 2D/3D step started in
   const [modeChanges, setModeChanges] = useState(0);
+  // "Look around" needs both: moving the map, and zooming it
+  const [panned, setPanned] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
   const lastMode = useRef(mode);
   const card = useRef<HTMLDivElement>(null);
 
@@ -133,6 +136,8 @@ export default function Tutorial({
       while (n > 0 && n < STEPS.length - 1 && STEPS[n].target && STEPS[n].target !== "visible-3d" && !selectors(STEPS[n]).some(findOne)) n += to >= i ? 1 : -1;
       setDid(false);
       setModeChanges(0);
+      setPanned(false);
+      setZoomed(false);
       setI(Math.max(0, Math.min(STEPS.length - 1, n)));
     },
     [i],
@@ -203,14 +208,26 @@ export default function Tutorial({
     const stage = document.querySelector<HTMLElement>(".mv-stage");
     let moved = 0;
     const ok = () => setDid(true);
+    const pan = () => setPanned(true);
+    const zoom = () => setZoomed(true);
+    const fingers = new Set<number>();
     const onDown = (e: PointerEvent) => {
       moved = e.buttons ? 1 : 0;
+      if (e.pointerType === "touch") fingers.add(e.pointerId);
     };
+    const onUp = (e: PointerEvent) => fingers.delete(e.pointerId);
     const onMove = (e: PointerEvent) => {
-      if (e.buttons && ++moved > 6) ok();
+      if (!e.buttons || ++moved <= 6) return;
+      if (fingers.size >= 2) zoom(); // two fingers: a pinch
+      else pan();
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key.length === 1 && "wasdqe".includes(e.key.toLowerCase())) ok();
+      const k = e.key.toLowerCase();
+      if (["w", "a", "s", "d", "arrowup", "arrowdown", "arrowleft", "arrowright"].includes(k)) pan();
+      if (["z", "x", "=", "-", "+"].includes(k)) zoom();
+    };
+    const onZoomBtn = (e: Event) => {
+      if ((e.target as HTMLElement).closest?.('.mv-zoom button[aria-label]')) zoom();
     };
     const onOver = (e: Event) => {
       if ((e.target as HTMLElement).closest?.(".mv-wp, .mv-planet")) ok();
@@ -218,17 +235,27 @@ export default function Tutorial({
     if (step.wait.kind === "move") {
       stage?.addEventListener("pointerdown", onDown);
       stage?.addEventListener("pointermove", onMove);
-      stage?.addEventListener("wheel", ok);
+      stage?.addEventListener("pointerup", onUp);
+      stage?.addEventListener("pointercancel", onUp);
+      stage?.addEventListener("wheel", zoom);
       window.addEventListener("keydown", onKey);
+      document.addEventListener("click", onZoomBtn, true);
     } else document.addEventListener("pointerover", onOver);
     return () => {
       stage?.removeEventListener("pointerdown", onDown);
       stage?.removeEventListener("pointermove", onMove);
-      stage?.removeEventListener("wheel", ok);
+      stage?.removeEventListener("pointerup", onUp);
+      stage?.removeEventListener("pointercancel", onUp);
+      stage?.removeEventListener("wheel", zoom);
       window.removeEventListener("keydown", onKey);
+      document.removeEventListener("click", onZoomBtn, true);
       document.removeEventListener("pointerover", onOver);
     };
   }, [open, hidden, step.wait, did]);
+
+  useEffect(() => {
+    if (open && STEPS[i].wait?.kind === "move" && panned && zoomed) setDid(true);
+  }, [open, i, panned, zoomed]);
 
   // Zoom-out step: done once they reach the galaxy view. If they stop zooming short of it for a few
   // seconds, a reminder tells them to keep going.
@@ -355,7 +382,12 @@ export default function Tutorial({
           <p id="tour-body">{t(touch && step.touch ? step.touch.body : step.body)}</p>
 
           <div className="tour-foot">
-            {step.wait?.kind === "modes" ? (
+            {step.wait?.kind === "move" ? (
+              <div className="tour-task">
+                <span className={`tour-chip ${panned ? "ok" : "live"}`}>{panned ? "✓" : "1"} {t(touch ? "Drag with one finger" : "Drag the map")}</span>
+                <span className={`tour-chip ${zoomed ? "ok" : "live"}`}>{zoomed ? "✓" : "2"} {t(touch ? "Pinch to zoom" : "Scroll to zoom")}</span>
+              </div>
+            ) : step.wait?.kind === "modes" ? (
               <div className="tour-task">
                 <span className={`tour-chip ${modeChanges >= 1 ? "ok" : ""}`}>{modeChanges >= 1 ? "✓" : "1"} {t("Switch to {mode}", { mode: other })}</span>
                 <span className={`tour-chip ${modeChanges >= 2 ? "ok" : ""}`}>{modeChanges >= 2 ? "✓" : "2"} {t("Back to {mode}", { mode: back })}</span>

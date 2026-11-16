@@ -67,6 +67,7 @@ export async function GET() {
         v: release,
         released: release ? day(new Date(release)) : "",
         observed: tMin && tMax ? `${day(tMin)} – ${day(tMax)}` : "",
+        ...(tMin && tMax ? { tMin: tMin.toISOString().slice(0, 10), tMax: tMax.toISOString().slice(0, 10) } : {}),
         maxOrder: +(props.hips_order ?? entry.hips_order ?? 5),
         ...(wavelengths.length ? { wavelengths } : {}),
         ...(blank.length ? { blank } : {}),

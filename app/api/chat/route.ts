@@ -98,7 +98,7 @@ const TOOLS = [
       },
       {
         name: "set_timeline",
-        description: "Move the timeline to show how the sky and planets looked at another date.",
+        description: "Move the timeline to one of SPHEREx's six-month snapshots (its first data to its newest) to see where the planets were then.",
         parameters: { type: "OBJECT", properties: { epoch: { type: "STRING", enum: EPOCHS.map((e) => e.label) } }, required: ["epoch"] },
       },
       {

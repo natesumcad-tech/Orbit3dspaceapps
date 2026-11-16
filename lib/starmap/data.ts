@@ -121,7 +121,7 @@ export const PRESET_WAYPOINTS: Waypoint[] = [
     ra: 37.955,
     dec: 89.264,
     description: "Today's North Star, less than a degree from the north celestial pole.",
-    significance: "Drag the timeline: the pole wanders, and Polaris was not always the pole star.",
+    significance: "Over thousands of years the pole wanders, so Polaris was not always the pole star.",
     date: "Pole star since the Middle Ages",
     stop: "polaris",
   },
@@ -232,29 +232,68 @@ PRESET_WAYPOINTS.push(
   { id: "barnard", title: "Barnard's Star", kind: "Red dwarf star", ra: 269.452, dec: 4.693, description: "A small red dwarf just 6 light-years away, too faint to see without a telescope.", significance: "It moves across our sky faster than any other star.", date: "Motion measured by Barnard, 1916" },
 );
 
-export type Epoch = { label: string; year: number; note: string };
+export type Epoch = {
+  /** English label, e.g. "Apr 2025" (pages format the date for the reader's language). */
+  label: string;
+  /** Fractional year of the snapshot. */
+  year: number;
+  /** ISO date of the snapshot. */
+  date: string;
+  /** Caption template and its values. */
+  note: string;
+  vars?: Record<string, string | number>;
+};
 
-/** Snap points on the timeline (astronomical years: 0 = 1 BCE). */
-export const EPOCHS: Epoch[] = [
-  { label: "12,000 BCE", year: -11999, note: "Vega sits near the north celestial pole: it was the pole star." },
-  { label: "3000 BCE", year: -2999, note: "Thuban in Draco is the pole star, around the time the first Egyptian pyramids were built." },
-  { label: "1 CE", year: 1, note: "The equinox has drifted from Aries toward Pisces." },
-  { label: "1609", year: 1609, note: "Galileo turns a telescope to the sky for the first time." },
-  { label: "1900", year: 1900, note: "Photography is transforming astronomy." },
-  { label: "Now", year: 0, note: "Today's sky. SPHEREx is mapping all of it in 102 colors." },
-  { label: "3000 CE", year: 3000, note: "The pole drifts toward Gamma Cephei, the pole star around 4000 CE." },
-  { label: "14,000 CE", year: 14000, note: "Vega is the pole star again." },
-];
-export const NOW_INDEX = 5;
+/** First and newest data in the SPHEREx release (replaced with IRSA's live dates when the map loads). */
+export const SURVEY = { start: "2025-04-24", end: "2026-05-14" };
 
-/** The current date as a fractional year. */
-export function currentYear() {
-  const now = new Date();
-  const start = Date.UTC(now.getUTCFullYear(), 0, 1);
-  return now.getUTCFullYear() + (now.getTime() - start) / (365.25 * 864e5);
+/**
+ * Timeline snap points: SPHEREx maps the whole sky every six months, so one point per six months from
+ * its first data to its newest. Filled in by setSurveyDates (kept as one array, updated in place).
+ */
+export const EPOCHS: Epoch[] = [];
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const fracYear = (d: Date) => d.getUTCFullYear() + (d.getTime() - Date.UTC(d.getUTCFullYear(), 0, 1)) / (365.25 * 864e5);
+
+/** Rebuild the timeline for a survey running from `start` to `end` (ISO dates). */
+export function setSurveyDates(start: string, end: string) {
+  const a = new Date(start), z = new Date(end);
+  if (!(a < z)) return;
+  SURVEY.start = start;
+  SURVEY.end = end;
+  const dates: Date[] = [];
+  for (let k = 0; ; k++) {
+    const d = new Date(Date.UTC(a.getUTCFullYear(), a.getUTCMonth() + 6 * k, a.getUTCDate()));
+    if (d >= z) break;
+    dates.push(d);
+  }
+  // the newest data closes the timeline (replacing a six-month point only a few weeks before it)
+  if (dates.length > 1 && z.getTime() - dates[dates.length - 1].getTime() < 60 * 864e5) dates.pop();
+  dates.push(z);
+  EPOCHS.length = 0;
+  dates.forEach((d, k) => {
+    const last = k === dates.length - 1;
+    EPOCHS.push({
+      label: `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`,
+      year: fracYear(d),
+      date: d.toISOString().slice(0, 10),
+      note:
+        k === 0
+          ? "SPHEREx's first survey data. Its first map of the whole sky begins."
+          : last
+            ? "The newest SPHEREx data. Drag back to watch the planets move between its six-month snapshots."
+            : "Full-sky map {n} done: SPHEREx has photographed the whole sky and starts again.",
+      vars: { n: k },
+    });
+  });
 }
+setSurveyDates(SURVEY.start, SURVEY.end);
 
-export const epochYear = (e: Epoch) => (e.label === "Now" ? currentYear() : e.year);
+/** The newest snapshot (the timeline starts there). */
+export const newestEpoch = () => EPOCHS.length - 1;
+
+export const epochYear = (e: Epoch) => e.year;
 
 /** Planet positions use JPL's simplified elements, so they're only shown within a few thousand years. */
 export const planetsValid = (year: number) => year > -3000 && year < 3001;

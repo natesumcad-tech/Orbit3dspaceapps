@@ -606,6 +606,14 @@ export const ES: Record<string, string> = {
   "That's everything: our whole Milky Way! Press “Zoom into the Sun ↓” to head back and finish the tour.": "¡Esto es todo: nuestra Vía Láctea entera! Pulsa «Acercarse al Sol ↓» para volver y terminar el recorrido.",
   "Zoom out more! Keep pinching out until the whole Milky Way appears.": "¡Aleja más! Sigue pellizcando hacia fuera hasta que aparezca toda la Vía Láctea.",
   "Zoom out more! Keep scrolling out until the whole Milky Way appears.": "¡Aleja más! Sigue alejando con la rueda hasta que aparezca toda la Vía Láctea.",
+  "SPHEREx's first survey data. Its first map of the whole sky begins.": "Los primeros datos del sondeo de SPHEREx. Empieza su primer mapa de todo el cielo.",
+  "The newest SPHEREx data. Drag back to watch the planets move between its six-month snapshots.": "Los datos más recientes de SPHEREx. Arrastra hacia atrás para ver cómo se mueven los planetas entre sus instantáneas semestrales.",
+  "Full-sky map {n} done: SPHEREx has photographed the whole sky and starts again.": "Mapa completo n.º {n} terminado: SPHEREx ha fotografiado todo el cielo y vuelve a empezar.",
+  "Drag the map": "Arrastra el mapa",
+  "Scroll to zoom": "Usa la rueda para hacer zoom",
+  "Drag with one finger": "Arrastra con un dedo",
+  "Pinch to zoom": "Pellizca para hacer zoom",
+  "Drag to move around the sky, and scroll to zoom in and out. Try both.": "Arrastra para moverte por el cielo y usa la rueda para acercar y alejar. Prueba las dos cosas.",
 };
 
 /** Phrases inside computed text (distances, times…), replaced when no exact translation exists. */

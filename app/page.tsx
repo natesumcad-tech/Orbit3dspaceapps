@@ -41,7 +41,7 @@ export default function Home() {
           </h1>
           <p className="h-lede">
             An interactive map built on SPHEREx Data Release 1. Pan across the whole sky in 2D or 3D, scan its 102 infrared
-            bands, rewind the sky 14,000 years, and open 360° views of stars, planets, galaxies and all 88 constellations.
+            bands, step through its six-month snapshots, and open 360° views of stars, planets, galaxies and all 88 constellations.
           </p>
           <div className="h-ctas">
             <Link transitionTypes={["site-navigation"]} href="/map" className="h-btn">
@@ -154,7 +154,7 @@ export default function Home() {
             </li>
             <li>
               <b>Timeline</b>
-              <span>See the sky drift from 12,000 BCE to 14,000 CE</span>
+              <span>Step through SPHEREx&apos;s six-month snapshots, first data to newest, and watch the planets move</span>
             </li>
             <li>
               <b>Blink real passes</b>

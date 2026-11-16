@@ -19,7 +19,7 @@ export const STEPS: Step[] = [
   },
   {
     title: "Look around",
-    body: "Drag to pan and scroll to zoom.",
+    body: "Drag to move around the sky, and scroll to zoom in and out. Try both.",
     touch: { body: "Drag with one finger to move, pinch to zoom, and twist two fingers to rotate.", prompt: "Drag or pinch the map" },
     wait: { kind: "move", prompt: "Drag or scroll the map" },
   },

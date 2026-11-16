@@ -107,7 +107,7 @@ export function tileUrl(layer: Layer, order: number, tile: number, frame = 0) {
 
 /** What /api/hips reports: the SPHEREx map IRSA currently publishes, and every survey's release date. */
 export type LiveCatalog = {
-  spherex?: { url: string; name: string; v: string; released: string; observed: string; maxOrder: number; wavelengths?: number[]; blank?: number[] };
+  spherex?: { url: string; name: string; v: string; released: string; observed: string; maxOrder: number; wavelengths?: number[]; blank?: number[]; /** first and newest observation (ISO dates) */ tMin?: string; tMax?: string };
   /** Release date by HiPS address. */
   layers?: Record<string, string>;
   checkedAt: string;

@@ -5,7 +5,7 @@ import SiteTabs from "@/components/SiteTabs";
 import "./infrared-isolation.css";
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import type { SkyData } from "@/lib/explorer/astro";
-import { EPOCHS, NOW_INDEX, PASTELS, PRESET_WAYPOINTS, epochYear, planetsValid, type Waypoint } from "@/lib/starmap/data";
+import { EPOCHS, PASTELS, PRESET_WAYPOINTS, epochYear, newestEpoch, planetsValid, setSurveyDates, type Epoch, type Waypoint } from "@/lib/starmap/data";
 import { planetDistance, planetPositions, raToX } from "@/lib/starmap/coords";
 import { BASE_LAYERS, BLANK_FRAMES, OVERLAYS, SPHEREX_WL, layerById, type LiveCatalog } from "@/lib/starmap/hips";
 import { createPortal } from "react-dom";
@@ -47,6 +47,10 @@ function save(key: string, value: unknown) {
 }
 
 const fmt = (n: number, d = 1) => (Math.abs(n) < 0.05 && d === 1 ? "0.0" : n.toFixed(d));
+/** A timeline date in the reader's language ("Apr 2025", "abr 2025"). */
+const epochText = (e: Epoch, lang: string) =>
+  new Date(e.date).toLocaleDateString(lang === "es" ? "es-ES" : "en-US", { month: "short", year: "numeric", timeZone: "UTC" });
+
 const raHMS = (ra: number) => {
   const h = ra / 15, hh = Math.floor(h), mm = Math.floor((h - hh) * 60);
   return `${hh}h ${String(mm).padStart(2, "0")}m`;
@@ -73,7 +77,9 @@ export default function StarMapApp() {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [custom, setCustom] = useState<Waypoint[]>([]);
   const [hover, setHover] = useState<MapHover | null>(null);
-  const [epoch, setEpoch] = useState(NOW_INDEX);
+  const [epoch, setEpoch] = useState(newestEpoch);
+  const epochRef = useRef(epoch);
+  epochRef.current = epoch;
   const [showSettings, setShowSettings] = useState(false);
   const [adding, setAdding] = useState<{ x: number; y: number } | null>(null);
   const [travel, setTravel] = useState<string | null>(null);
@@ -267,8 +273,8 @@ export default function StarMapApp() {
     return { ra, dec, mag, ly: pc > 0 ? pc * 3.2616 : null };
   }, []);
   const questPlanet = useCallback((name: string) => {
-    const now = new Date();
-    const year = now.getUTCFullYear() + (now.getTime() - Date.UTC(now.getUTCFullYear(), 0, 1)) / (365.25 * 864e5);
+    // where the map draws it: at the timeline's date
+    const year = epochYear(EPOCHS[Math.min(epochRef.current, EPOCHS.length - 1)]);
     const p = planetPositions(year).find((q) => q.name.toLowerCase() === name.toLowerCase());
     if (!p) return null;
     const cap = name[0].toUpperCase() + name.slice(1).toLowerCase();
@@ -477,9 +483,9 @@ export default function StarMapApp() {
     save(STORE_WP, custom);
   }, [custom, ready]);
   useEffect(() => {
-    const y = epochYear(EPOCHS[epoch]);
+    const y = epochYear(EPOCHS[Math.min(epoch, EPOCHS.length - 1)]);
     viewerRef.current?.setEpoch(y - 2000, planetsValid(y));
-  }, [epoch, ready]);
+  }, [epoch, ready, live]);
 
   // Shift+G: drop a custom waypoint where you're looking (or under the mouse)
   useEffect(() => {
@@ -604,7 +610,7 @@ export default function StarMapApp() {
         const i = EPOCHS.findIndex((e) => e.label === a.args.epoch);
         if (i < 0) return null;
         setEpoch(i);
-        return translate(langRef.current, "⧗ Timeline set to {when}", { when: translate(langRef.current, EPOCHS[i].label) });
+        return translate(langRef.current, "⧗ Timeline set to {when}", { when: epochText(EPOCHS[i], langRef.current) });
       }
       case "set_imagery": {
         if (a.args.layer === "2mass") {
@@ -685,6 +691,12 @@ export default function StarMapApp() {
         .then((c: LiveCatalog | null) => {
           if (!c?.spherex) return;
           viewerRef.current?.setLive(c);
+          // the timeline runs from the first SPHEREx data to the newest, as IRSA reports them
+          if (c.spherex.tMin && c.spherex.tMax) {
+            const wasNewest = epochRef.current >= EPOCHS.length - 1;
+            setSurveyDates(c.spherex.tMin, c.spherex.tMax);
+            setEpoch((e) => (wasNewest ? EPOCHS.length - 1 : Math.min(e, EPOCHS.length - 1)));
+          }
           setLive(c);
         })
         .catch(() => {});
@@ -709,7 +721,7 @@ export default function StarMapApp() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
   const all = [...PRESET_WAYPOINTS, ...custom];
-  const ep = EPOCHS[epoch];
+  const ep = EPOCHS[Math.min(epoch, EPOCHS.length - 1)];
 
   return (
     <div ref={rootRef} role="main" aria-label={t("Sky Explorer: an interactive map of the infrared sky")} className={`mv ${toolsOpen ? "tools-open" : ""} ${sphere && !closing ? "in-sphere" : ""} ${cosmic ? "in-cosmic" : ""}`}>
@@ -1054,13 +1066,12 @@ export default function StarMapApp() {
         title={
           <div className="mv-tl-head">
             <span className="cl-label">{t("Timeline")}</span>
-            <strong>{t(ep.label)}</strong>
+            <strong>{epochText(ep, lang)}</strong>
           </div>
         }
       >
         <p className="mv-tl-note">
-          {t(ep.note)}
-          {!planetsValid(epochYear(ep)) && settings.planets && <em> {t("Planets hidden: too far from today to calculate reliably.")}</em>}
+          {t(ep.note, ep.vars)}
         </p>
         <Timeline value={epoch} onChange={setEpoch} />
       </Collapsible>
@@ -1469,6 +1480,7 @@ const Minimap = forwardRef<MinimapHandle, { onMove: (x: number, y: number) => vo
 
 function Timeline({ value, onChange }: { value: number; onChange: (i: number) => void }) {
   const t = useT();
+  const { lang } = useLang();
   const track = useRef<HTMLDivElement>(null);
   const [dragPos, setDragPos] = useState<number | null>(null);
   const n = EPOCHS.length;
@@ -1505,7 +1517,7 @@ function Timeline({ value, onChange }: { value: number; onChange: (i: number) =>
             onClick={() => onChange(i)}
             tabIndex={-1}
           >
-            <span>{t(ep.label)}</span>
+            <span>{epochText(ep, lang)}</span>
           </button>
         ))}
         <div
@@ -1517,7 +1529,7 @@ function Timeline({ value, onChange }: { value: number; onChange: (i: number) =>
           aria-valuemin={0}
           aria-valuemax={n - 1}
           aria-valuenow={value}
-          aria-valuetext={t(EPOCHS[value].label)}
+          aria-valuetext={epochText(EPOCHS[value], lang)}
           onKeyDown={(e) => {
             if (e.key === "ArrowLeft") onChange(Math.max(0, value - 1));
             if (e.key === "ArrowRight") onChange(Math.min(n - 1, value + 1));
@@ -1692,8 +1704,8 @@ function SettingsWindow({
           <h3>{t("About the data")}</h3>
           <p className="mv-note">
             The map is SPHEREx Data Release 1 (NASA/JPL-Caltech, served by IRSA), streamed as HiPS tiles and laid onto a grid by RA/Dec starting from the
-            origin (RA 0h, Dec 0°). Very bright cores that DR1 leaves blank (saturated pixels) are shown as white. Constellation lines and names come from the Hipparcos-based d3-celestial catalogue; star distances for the 3D constellations come from the HYG database v4.1 (CC BY-SA 4.0). The timeline shifts the sky by
-            precession (a simplified model), and planets use NASA JPL&apos;s approximate orbital elements.
+            origin (RA 0h, Dec 0°). Very bright cores that DR1 leaves blank (saturated pixels) are shown as white. Constellation lines and names come from the Hipparcos-based d3-celestial catalogue; star distances for the 3D constellations come from the HYG database v4.1 (CC BY-SA 4.0). The timeline steps through
+            SPHEREx&apos;s six-month snapshots, from its first data to its newest (dates read live from IRSA), and planets use NASA JPL&apos;s approximate orbital elements.
           </p>
         </section>
       </div>

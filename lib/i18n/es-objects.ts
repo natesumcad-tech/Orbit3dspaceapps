@@ -191,7 +191,7 @@ export const ES_OBJECTS: Record<string, string> = {
   "Visible to the naked eye from the Southern Hemisphere as a detached piece of the Milky Way.": "Visible a simple vista desde el hemisferio sur como un trozo suelto de la Vía Láctea.",
   "Pole star": "Estrella polar",
   "Today's North Star, less than a degree from the north celestial pole.": "La Estrella Polar actual, a menos de un grado del polo norte celeste.",
-  "Drag the timeline: the pole wanders, and Polaris was not always the pole star.": "Arrastra la línea temporal: el polo se desplaza y Polaris no siempre fue la estrella polar.",
+  "Over thousands of years the pole wanders, so Polaris was not always the pole star.": "A lo largo de miles de años el polo se desplaza, así que Polaris no siempre fue la estrella polar.",
   "Vega": "Vega",
   "Bright star": "Estrella brillante",
   "A brilliant blue-white star 25 light-years away.": "Una brillante estrella blanco-azulada a 25 años luz.",
