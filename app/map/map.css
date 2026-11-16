@@ -1331,9 +1331,9 @@ button.q-chip:hover { filter: brightness(1.08); }
 
 /* ── Quest arrow (game-style): bobs over the destination, or points the way from the screen edge ── */
 .qa { position: fixed; left: 0; top: 0; z-index: 60; pointer-events: none; width: 0; height: 0; }
-.qa-turn { position: absolute; left: -20px; top: -36px; width: 40px; height: 36px; transform-origin: 20px 36px; }
-.qa.edge .qa-turn { top: -18px; transform-origin: 20px 18px; }
-.qa-bob { width: 40px; height: 36px; animation: qa-bob .75s ease-in-out infinite alternate; }
+.qa-turn { position: absolute; left: -20px; top: -44px; width: 40px; height: 44px; transform-origin: 20px 44px; }
+.qa.edge .qa-turn { top: -22px; transform-origin: 20px 22px; }
+.qa-bob { width: 40px; height: 44px; animation: qa-bob .75s ease-in-out infinite alternate; }
 .qa.edge .qa-bob { animation-name: qa-nudge; }
 .qa-bob svg { display: block; }
 @keyframes qa-bob { from { transform: translateY(-12px); } to { transform: translateY(0); } }
@@ -1386,3 +1386,11 @@ button.q-chip:hover { filter: brightness(1.08); }
   .q-form input { font-size: 16px; } /* 16px stops iPhones zooming the page when you type */
   .mv-coord-input, .mv-search-panel input, .mv-ai textarea { font-size: 16px; }
 }
+
+/* sound on/off */
+.sound-toggle { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; border: 0; cursor: pointer; color: #171512; background: transparent; }
+.mv-actions .sound-toggle { background: var(--glass); }
+.sound-toggle[aria-pressed="false"] { color: #8a7f6f; }
+.sound-toggle:focus-visible { outline: 2px solid #c9a46a; outline-offset: 2px; }
+.mv-lang-sec .sound-toggle { background: rgba(0,0,0,.06); margin-left: 8px; vertical-align: middle; }
+@media (max-width: 600px) { .mv-actions .sound-toggle { display: none; } }

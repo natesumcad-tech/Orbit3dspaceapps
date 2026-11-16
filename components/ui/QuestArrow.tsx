@@ -150,9 +150,9 @@ export default function QuestArrow({ locate }: { locate: () => ArrowSpot | null 
     <div ref={root} className="qa" style={{ display: "none" }} aria-hidden="true">
       <div ref={turn} className="qa-turn">
         <div className="qa-bob">
-          <svg viewBox="0 0 40 36" width="40" height="36">
+          <svg viewBox="0 0 40 44" width="40" height="44">
             {/* waypoint triangle pointing down: tip at the bottom centre */}
-            <path d="M3 3 H37 L20 33 Z" fill="#ffe873" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
+            <path d="M4 3 H36 L20 41 Z" fill="#ffe873" stroke="#3a2205" strokeWidth="3" strokeLinejoin="round" />
           </svg>
         </div>
       </div>

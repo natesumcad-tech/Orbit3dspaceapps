@@ -23,6 +23,8 @@ import BlinkViewer, { type FeaturedBlink } from "./BlinkViewer";
 import DataPanel from "./DataPanel";
 import Tutorial, { tourDone } from "./Tutorial";
 import Quest, { loadQuest } from "./Quest";
+import SoundToggle from "@/components/ui/SoundToggle";
+import { sfx } from "@/lib/ui/sound";
 import { LangSwitch, addTranslations, translate, useLang, useT, useTV } from "@/lib/i18n";
 
 const STORE_WP = "starmap.waypoints.v1";
@@ -88,6 +90,7 @@ export default function StarMapApp() {
   const [fovDeg, setFovDeg] = useState(10);
   /** Run `fn` at most every `ms` per key, always finishing with a last call once things settle. */
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const motion = useRef({ at: 0, x: 0, y: 0, d: 1, woosh: 0 });
   const throttles = useRef(new Map<string, { at: number; timer: ReturnType<typeof setTimeout> | null }>());
   const throttle = (key: string, ms: number, fn: () => void) => {
     const t = throttles.current.get(key) ?? { at: 0, timer: null };
@@ -162,11 +165,13 @@ export default function StarMapApp() {
     cosmicRef.current?.setActive(false);
     viewerRef.current?.setEnabled(true);
     if (goHome) viewerRef.current?.arriveFromSpace();
+    sfx.swoop(false);
   }, []);
   const goCosmic = useCallback(() => {
     if (cosmicOn.current || !cosmicRef.current) return;
     cosmicOn.current = true;
     setCosmic(true);
+    sfx.swoop(true);
     viewerRef.current?.setEnabled(false);
     cosmicRef.current.setActive(true);
     cosmicRef.current.pullBack();
@@ -199,6 +204,7 @@ export default function StarMapApp() {
     async (stop: string) => {
       const v = viewerRef.current;
       if (!v || !byId(stop)) return;
+      sfx.swoop(true);
       setHover(null);
       overCard.current = false;
       v.clearCard();
@@ -235,6 +241,7 @@ export default function StarMapApp() {
   const exitSphere = useCallback(() => {
     if (!sphereRef.current || leaving.current) return;
     leaving.current = true;
+    sfx.swoop(false);
     // Cutscene — stepping inside, played backwards: the 360° view darkens, fades to the map,
     // and the map flies back out of the spot with the hyperspace streaks
     const quick = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -368,6 +375,17 @@ export default function StarMapApp() {
         addTranslations("es", es);
         viewer = new StarMapViewer(stageRef.current!, overlayRef.current!, sky, {
           onView: (v: View) => {
+            // a woosh when the view starts moving quickly (not every frame: once per burst)
+            {
+              const now = performance.now(), m = motion.current;
+              const dt = Math.max(1, now - m.at) / 1000;
+              const speed = (Math.hypot(v.x - m.x, v.y - m.y) / Math.max(1e-6, v.radius) + Math.abs(Math.log(v.d / m.d)) * 1.5) / dt;
+              if (speed > 1.6 && now - m.woosh > 1400 && now - m.at < 200) {
+                m.woosh = now;
+                sfx.woosh(Math.min(1, speed / 6));
+              }
+              Object.assign(m, { at: now, x: v.x, y: v.y, d: v.d });
+            }
             viewRef.current = v;
             // The map calls this every frame while moving: keep the page's own work light
             throttle("minimap", 50, () => minimapRef.current?.draw(viewRef.current!));
@@ -405,6 +423,7 @@ export default function StarMapApp() {
           },
           onHover: hoverWp,
           onTravel: (wp) => {
+            sfx.woosh(1);
             setTravel(wp.title);
             setTimeout(() => setTravel(null), 1800);
           },
@@ -705,6 +724,18 @@ export default function StarMapApp() {
     return () => clearInterval(t);
   }, [ready]);
 
+  // Clicks for buttons, a ratchet for the settings wrench (the mission adds its own beeps)
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      const el = (e.target as HTMLElement).closest?.("button, [role='tab'], [role='radio'], summary, a, .mv-ov");
+      if (!el || el.matches(":disabled")) return;
+      if (el.closest(".mv-wrench")) sfx.wrench();
+      else if (!el.closest(".sound-toggle")) sfx.click();
+    };
+    document.addEventListener("click", onClick, true);
+    return () => document.removeEventListener("click", onClick, true);
+  }, []);
+
   // Map labels follow the language too
   useEffect(() => {
     viewerRef.current?.setLanguage(lang, (s) => translate(lang, s));
@@ -884,6 +915,7 @@ export default function StarMapApp() {
       <div className="mv-top-right">
         <div className="mv-actions">
           <LangSwitch className="mv-glass" />
+          <SoundToggle className="mv-glass" />
           <button
             className="mv-glass mv-pill"
             onClick={() => {
@@ -1087,7 +1119,7 @@ export default function StarMapApp() {
       {sphere && (
         <>
           <div className={`mv-sphere ${closing ? "closing" : ""}`} onAnimationEnd={(e) => e.animationName === "mv-sphere-out" && finishExit()}>
-            <SphereView onAsk={askAbout} stopId={sphere} onStop={enterSphere} onExit={exitSphere} />
+            <SphereView onAsk={askAbout} stopId={sphere} onStop={enterSphere} onExit={exitSphere} presetOrbit={tour} />
           </div>
         </>
       )}
@@ -1587,6 +1619,7 @@ function SettingsWindow({
         <section className="mv-lang-sec">
           <h3>{t("Language / Idioma")}</h3>
           <LangSwitch />
+          <SoundToggle />
         </section>
 
         <section>

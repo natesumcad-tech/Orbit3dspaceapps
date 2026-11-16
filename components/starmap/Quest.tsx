@@ -6,6 +6,7 @@ import { spherexCutout } from "@/lib/starmap/cutout";
 import { topSlot } from "@/lib/ui/placement";
 import { formatDecDMS, formatRaHMS } from "@/lib/starmap/coordSearch";
 import QuestArrow, { type ArrowSpot } from "@/components/ui/QuestArrow";
+import { sfx } from "@/lib/ui/sound";
 import { useT, useTV } from "@/lib/i18n";
 import { isVoiceMuted, setVoiceMuted, speak, stopSpeech } from "@/lib/ui/voice";
 
@@ -338,6 +339,8 @@ export default function Quest({
       const i = stepIdx;
       const lines = [...MISSION[i].success(c), ...(MISSION[i + 1]?.intro(c) ?? [])];
       const last = i + 1 >= MISSION.length;
+      if (last) sfx.fanfare();
+      else sfx.done();
       update({ ...extra, step: i + 1, ...(last ? { done: true, finishedIn: Date.now() - (saved.started ?? Date.now()) } : {}) });
       setQueue(lines);
       setLi(0);
@@ -362,8 +365,18 @@ export default function Quest({
 
   const seeking = open && phase === "seek" && !saved.done;
   const check = step.check;
+  // Beeps: an incoming transmission when the mission is offered, a buzz for a wrong answer or turn
+  useEffect(() => {
+    if (open && !hidden && phase === "offer") sfx.incoming();
+  }, [open, hidden, phase]);
+  useEffect(() => {
+    if (nope) sfx.nope();
+  }, [nope]);
   /** In a 360° view that this objective doesn't ask for (only the last one does: Neptune's). */
   const wrongSphere = seeking && !!sphere && !(check.kind === "sphere" && sphere === check.stop);
+  useEffect(() => {
+    if (wrongSphere) sfx.nope();
+  }, [wrongSphere]);
 
   // Clicking a quest target on the map
   useEffect(() => {

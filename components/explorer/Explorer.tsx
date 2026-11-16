@@ -21,7 +21,7 @@ const LANGS = [
  * The 360° sphere view, shown inside the Star Map page. The parent owns which stop is open
  * (`stopId`) and is told when the viewer wants another stop or wants to go back to the map.
  */
-export default function SphereView({ stopId, onStop, onExit, onAsk }: { onAsk?: (name: string) => void; stopId: string; onStop: (id: string) => void; onExit: () => void }) {
+export default function SphereView({ stopId, onStop, onExit, onAsk, presetOrbit = false }: { onAsk?: (name: string) => void; stopId: string; onStop: (id: string) => void; onExit: () => void; /** Start in Orbit, so the dial takes you around the object (the tour). */ presetOrbit?: boolean }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const labelsRef = useRef<HTMLDivElement>(null);
   const fadeRef = useRef<HTMLDivElement>(null);
@@ -103,6 +103,10 @@ export default function SphereView({ stopId, onStop, onExit, onAsk }: { onAsk?: 
   }, [stopId, ready]);
 
   useEffect(() => engineRef.current?.setToggles(showLabels, showLines), [showLabels, showLines]);
+  // The tour's preset: once you've arrived, the dial travels around the planet (Orbit), not on the spot
+  useEffect(() => {
+    if (ready && presetOrbit && visibleId === stopId) engineRef.current?.setNavMode("orbit");
+  }, [ready, presetOrbit, visibleId, stopId]);
   useEffect(() => engineRef.current?.setLanguage(lang), [lang]);
 
   // Keep hotspot cards from opening underneath the info card

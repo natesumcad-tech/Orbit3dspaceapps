@@ -615,6 +615,9 @@ export const ES: Record<string, string> = {
   "Pinch to zoom": "Pellizca para hacer zoom",
   "Drag to move around the sky, and scroll to zoom in and out. Try both.": "Arrastra para moverte por el cielo y usa la rueda para acercar y alejar. Prueba las dos cosas.",
   "Always up to date: SPHEREx keeps observing, and as NASA/IPAC releases new data the map, this timeline and the dates update by themselves.": "Siempre al día: SPHEREx sigue observando y, a medida que NASA/IPAC publica nuevos datos, el mapa, esta línea temporal y las fechas se actualizan solos.",
+  "Sound effects on": "Efectos de sonido activados",
+  "Sound effects off": "Efectos de sonido desactivados",
+  "Sound effects": "Efectos de sonido",
 };
 
 /** Phrases inside computed text (distances, times…), replaced when no exact translation exists. */

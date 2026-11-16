@@ -6,6 +6,7 @@ import { useT } from "@/lib/i18n";
 import { topSlot } from "@/lib/ui/placement";
 import QuestArrow from "@/components/ui/QuestArrow";
 import { isVoiceMuted, setVoiceMuted, speak, stopSpeech } from "@/lib/ui/voice";
+import { sfx } from "@/lib/ui/sound";
 
 /** Remembered in a cookie (and browser storage as a backup) so the tour only plays once. */
 const COOKIE = "sx_tour_done_v2"; // bump the version to show the tour to everyone again
@@ -290,7 +291,10 @@ export default function Tutorial({
     if (zoomStep) widest.current = 0;
   }, [zoomStep]);
 
-  // Done it: a beat to see the tick, then on to the next step
+  // Done it: a chime, a beat to see the tick, then on to the next step
+  useEffect(() => {
+    if (did && open) sfx.chime();
+  }, [did, open]);
   useEffect(() => {
     if (!did || !open || hidden) return; // back on the map first (after a 360° view)
     const t = setTimeout(() => go(i + 1), 900);
