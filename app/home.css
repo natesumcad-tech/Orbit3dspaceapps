@@ -502,12 +502,6 @@
 
 /* Testing: reset Orbit3D tour (next to the team name) */
 .h-brand { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-.h-reset-tour {
-  font: inherit; font-size: 0.72rem; font-weight: 600; cursor: pointer; white-space: nowrap;
-  padding: 6px 11px; border-radius: 999px; border: 1px dashed #b8a68b; background: #f7efdf; color: #514a40;
-}
-.h-reset-tour:hover { border-style: solid; color: #171512; }
-.h-reset-tour:focus-visible { outline: 2px solid #171512; outline-offset: 2px; }
 
 /* Credits */
 .h-credits { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 12px; }

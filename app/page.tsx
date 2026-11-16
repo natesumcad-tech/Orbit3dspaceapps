@@ -2,7 +2,6 @@ import PageTransition from "@/components/PageTransition";
 import Image from "next/image";
 import Link from "next/link";
 import SiteTabs from "@/components/SiteTabs";
-import ResetTutorialButton from "@/components/ResetTutorialButton";
 import ScrollReveal from "@/components/ScrollReveal";
 import SpectrumExplorer from "@/components/SpectrumExplorer";
 import { site, project, mission, resources, credits, aiUse, access } from "@/content/site";
@@ -29,7 +28,6 @@ export default function Home() {
               <span className="h-logo-mark" aria-hidden="true" />
               {site.brand}
             </Link>
-            <ResetTutorialButton />
           </div>
           <SiteTabs active="home" />
         </div>
