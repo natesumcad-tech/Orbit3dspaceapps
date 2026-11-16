@@ -9,8 +9,8 @@ import { isVoiceMuted, setVoiceMuted, speak, stopSpeech } from "@/lib/ui/voice";
 import { sfx } from "@/lib/ui/sound";
 
 /** Remembered in a cookie (and browser storage as a backup) so the tour only plays once. */
-const COOKIE = "sx_tour_done_v2"; // bump the version to show the tour to everyone again
-const STORE = "starmap.tour.v2";
+const COOKIE = "sx_tour_done_v3"; // bump the version to show the tour to everyone again
+const STORE = "starmap.tour.v3";
 
 export function tourDone() {
   if (typeof document === "undefined") return true;
@@ -308,7 +308,7 @@ export default function Tutorial({
       if ((e.target as HTMLElement)?.closest?.("input, textarea, select, button, a")) return;
       if (e.key === "Escape" && i === 0) finish();
       else if ((e.key === "Enter" || e.key === "ArrowRight") && !step.wait) last ? finish() : go(i + 1);
-      else if (e.key === "ArrowLeft" && i > 1) go(i - 1);
+      // (no going back: the tour only moves forward, one step at a time)
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -436,11 +436,6 @@ export default function Tutorial({
               <span />
             )}
             <div className="tour-actions">
-              {i > 1 && (
-                <button className="tour-ghost" onClick={() => go(i - 1)} aria-label={t("Previous step")}>
-                  {t("Back")}
-                </button>
-              )}
               {last ? (
                 <button className="tour-go" onClick={finish} ref={focusQuietly}>
                   {t("Start exploring")}
