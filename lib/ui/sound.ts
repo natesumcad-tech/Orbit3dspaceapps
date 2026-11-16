@@ -1,8 +1,8 @@
 "use client";
 
 /**
- * Little sound effects, made on the spot with the Web Audio API (no audio files to download):
- * clicks for buttons, a ratchet for the settings wrench, wooshes for movement and beeps for the
+ * Little sound effects, mostly made on the spot with the Web Audio API: a recorded click for buttons
+ * (public/sounds/click.mp3), a ratchet for the settings wrench, wooshes for movement and beeps for the
  * mission. Quiet by design, and switchable off (remembered in this browser).
  */
 
@@ -40,12 +40,35 @@ function audio() {
       out = ctx.createGain();
       out.gain.value = 0.5;
       out.connect(ctx.destination);
+      loadSamples(ctx);
     }
     if (ctx.state === "suspended") void ctx.resume();
     return ctx.state === "closed" ? null : ctx;
   } catch {
     return null;
   }
+}
+
+/** Recorded sounds, decoded once the audio starts. */
+const samples: Record<string, AudioBuffer | undefined> = {};
+const SAMPLE_URLS = { click: "/sounds/click.mp3" };
+function loadSamples(a: AudioContext) {
+  for (const [name, url] of Object.entries(SAMPLE_URLS))
+    fetch(url)
+      .then((r) => r.arrayBuffer())
+      .then((b) => a.decodeAudioData(b))
+      .then((buf) => (samples[name] = buf))
+      .catch(() => {});
+}
+function play(name: keyof typeof SAMPLE_URLS, vol = 0.8) {
+  const a = audio(), buf = samples[name];
+  if (!a || !out || !buf) return false;
+  const s = a.createBufferSource(), g = a.createGain();
+  s.buffer = buf;
+  g.gain.value = vol;
+  s.connect(g).connect(out);
+  s.start();
+  return true;
 }
 
 let noiseBuf: AudioBuffer | null = null;
@@ -96,8 +119,9 @@ function hiss(at: number, dur: number, vol: number, f0: number, f1: number, q = 
 }
 
 export const sfx = {
-  /** A soft button click. */
+  /** A button click: the recorded one, or a synthesized tick until it has loaded. */
   click: () => {
+    if (play("click")) return;
     hiss(0, 0.035, 0.22, 3200, 2600, 2.5);
     tone(1800, 0, 0.03, 0.04, "triangle");
   },
