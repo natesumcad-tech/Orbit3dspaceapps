@@ -29,6 +29,10 @@ export type Line = {
   /** A small diagram of the sky's grid (RA around the equator, Dec north and south). */
   diagram?: "radec";
   examples?: Example[];
+  /** The examples are two ways of writing the same thing (shown with "or" between them). */
+  alternatives?: boolean;
+  /** While this line shows, the quest arrow points here (CSS selectors, first one on screen wins). */
+  point?: string[];
 };
 
 export type Check =
@@ -37,7 +41,9 @@ export type Check =
   | { kind: "goto"; ra: number; dec: number; radius: number }
   | { kind: "band" }
   | { kind: "blink" }
-  | { kind: "sphere"; stop: string };
+  | { kind: "sphere"; stop: string }
+  /** Travel this many degrees around the object in its 360° view (Orbit). */
+  | { kind: "orbit"; stop: string; deg: number };
 
 export type MissionStep = {
   id: string;
@@ -137,6 +143,8 @@ export const MISSION: MissionStep[] = [
           { value: "4h 32m +26", note: "RA 4 hours 32 minutes, Dec 26° north" },
           { value: "68, 26", note: "the same spot in plain degrees (RA × 15)" },
         ],
+        alternatives: true,
+        point: [".mv-coord-input", ".mv-tools-btn"],
       },
     ],
     success: () => [
@@ -223,6 +231,15 @@ export const MISSION: MissionStep[] = [
     hint: "Click Neptune again (or its View in 360° button) once you've arrived.",
     check: { kind: "sphere", stop: "neptune" },
     intro: () => [{ text: "We're in orbit around it. Step inside Neptune's 360° view and you'll find us." }],
+    success: () => [{ text: "You're inside! I can hear you, but we're hidden on the far side of the planet." }],
+  },
+  {
+    id: "circle",
+    objective: "Orbit Neptune to find the Wren",
+    hint: "Drag the dial in the Move panel to travel around Neptune (you can also drag the view). Keep going until you've gone a third of the way round.",
+    check: { kind: "orbit", stop: "neptune", deg: 120 },
+    glow: ".xp-move",
+    intro: () => [{ text: "Use the dial in the Move panel to fly around Neptune. Our beacon is somewhere on the far side: keep circling till you spot us." }],
     success: () => [
       { text: "Wren to Earth: we see you! Navigation's back, tanks are full, and we're coming home." },
       { text: "You navigated by the stars, read real coordinates, found fuel with SPHEREx data and tracked us past Neptune. Thank you, explorer." },

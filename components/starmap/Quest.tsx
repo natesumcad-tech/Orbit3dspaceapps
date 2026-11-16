@@ -373,7 +373,7 @@ export default function Quest({
     if (nope) sfx.nope();
   }, [nope]);
   /** In a 360° view that this objective doesn't ask for (only the last one does: Neptune's). */
-  const wrongSphere = seeking && !!sphere && !(check.kind === "sphere" && sphere === check.stop);
+  const wrongSphere = seeking && !!sphere && !((check.kind === "sphere" || check.kind === "orbit") && sphere === check.stop);
   useEffect(() => {
     if (wrongSphere) sfx.nope();
   }, [wrongSphere]);
@@ -410,6 +410,28 @@ export default function Quest({
     window.addEventListener("spherex-blink", on);
     return () => window.removeEventListener("spherex-blink", on);
   }, [seeking, check, complete]);
+
+  // Orbiting in the 360° view: add up how far round they've travelled (the dial, or dragging in Orbit)
+  const [orbitDeg, setOrbitDeg] = useState(0);
+  const orbiting = seeking && check.kind === "orbit" && sphere === check.stop;
+  useEffect(() => {
+    if (!orbiting) return setOrbitDeg(0);
+    let last: number | null = null;
+    const on = (e: Event) => {
+      const { az, mode } = (e as CustomEvent<{ az: number; mode: string }>).detail;
+      if (mode !== "orbit") return void (last = null);
+      if (last !== null) {
+        const d = Math.atan2(Math.sin(az - last), Math.cos(az - last));
+        setOrbitDeg((v) => v + Math.abs((d * 180) / Math.PI));
+      }
+      last = az;
+    };
+    window.addEventListener("sphere-nav", on);
+    return () => window.removeEventListener("sphere-nav", on);
+  }, [orbiting]);
+  useEffect(() => {
+    if (orbiting && check.kind === "orbit" && orbitDeg >= check.deg) complete();
+  }, [orbiting, orbitDeg, check, complete]);
 
   // Stepping inside the 360° view
   useEffect(() => {
@@ -460,7 +482,7 @@ export default function Quest({
       return null;
     };
     // Stepped inside a 360° view this objective doesn't need: point the way back out
-    if (sphere) return wrongSphere ? ui(".xp-exit") : null;
+    if (sphere) return wrongSphere ? ui(".xp-exit") : orbiting ? ui(".xp-ring") : null;
     const place = (name: string, at: { ra: number; dec: number } | null): ArrowSpot | null => {
       if (!at) return null;
       const s = toScreen(at.ra, at.dec);
@@ -475,7 +497,11 @@ export default function Quest({
       if (s && sep(center.ra, center.dec, s.ra, s.dec) > 1) return place(check.star, s);
       return ui(".mv-coord-center", ".mv-tools-btn"); // on phones the coordinates live behind Tools
     }
-    if (check.kind === "goto") return ui(".mv-coord-go", ".mv-coord-form", ".mv-tools-btn");
+    if (check.kind === "goto") {
+      // the box to type in first; once something's typed, the Go button
+      const typed = (document.querySelector<HTMLInputElement>(".mv-coord-input")?.value ?? "").trim();
+      return typed ? ui(".mv-coord-go", ".mv-coord-form", ".mv-tools-btn") : ui(".mv-coord-input", ".mv-coord-form", ".mv-tools-btn");
+    }
     if (check.kind === "band") return ui(".mv-ir-presets", ".mv-minicard");
     if (check.kind === "blink") return ui(".mv-blink-featured", ".mv-tools-btn");
     return null;
@@ -546,7 +572,20 @@ export default function Quest({
   if (phase === "talk") {
     const line = queue[li];
     if (!line) return null;
+    const pointAt = line.point;
     return (
+      <>
+      {pointAt && (
+        <QuestArrow
+          locate={() => {
+            for (const sel of pointAt) {
+              const r = document.querySelector(sel)?.getBoundingClientRect();
+              if (r && r.width > 0 && r.height > 0) return { x: r.left + r.width / 2, top: r.top, bottom: r.bottom, w: r.width };
+            }
+            return null;
+          }}
+        />
+      )}
       <div style={pos} className={`q-card q-talk${where} ${flash ? "flash" : ""}`} role="dialog" aria-label={t("Commander Ada Reyes")}>
         {flash && <span className="q-done-tick">{t("✓ Objective complete")}</span>}
         <div className="q-who">
@@ -579,9 +618,11 @@ export default function Quest({
         {line.examples && (
           <div className="q-examples">
             <span className="q-examples-k">{t("Type it like this")}</span>
-            {line.examples.map((x) => (
-              <div key={x.value}>
+            {line.examples.map((x, k) => (
+              <div key={x.value} className="q-example">
+                {line.alternatives && k > 0 && <span className="q-or">{t("or")}</span>}
                 <code>{x.value}</code>
+                <span className="q-ex-arrow" aria-hidden="true">→</span>
                 <span>{t(x.note)}</span>
               </div>
             ))}
@@ -604,6 +645,7 @@ export default function Quest({
           </button>
         </div>
       </div>
+      </>
     );
   }
 
@@ -638,7 +680,10 @@ export default function Quest({
       <QuestArrow locate={locate} />
       <button style={slot ? { left: slot.left + slot.width / 2, top: slot.top } : undefined} className={`q-mini${where}`} onClick={() => setMini(false)} aria-label={t("Show mission objective")}>
         <Portrait />
-        <span>{t(step.objective)}</span>
+        <span>
+          {t(step.objective)}
+          {orbiting && check.kind === "orbit" && <b className="q-orbit"> · {t("{deg}° of {goal}°", { deg: Math.min(check.deg, Math.round(orbitDeg)), goal: check.deg })}</b>}
+        </span>
       </button>
       </>
     );
@@ -683,7 +728,7 @@ export default function Quest({
             <li>
               <i>1</i>
               <span>
-                {t("Type")} <code>4h 32m +26</code> {t("in the glowing coordinate bar at the top left, RA first, then Dec.")}{" "}
+                {t("Type")} <code>4h 32m +26</code> <b className="q-or-inline">{t("or")}</b> <code>68, 26</code> {t("in the glowing coordinate bar at the top left, RA first, then Dec.")}{" "}
                 <button className="q-chip-btn" onClick={() => window.dispatchEvent(new CustomEvent("coord-fill", { detail: "4h 32m +26" }))}>
                   {t("Type it in for me")}
                 </button>

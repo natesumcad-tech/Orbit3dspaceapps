@@ -1403,3 +1403,10 @@ button.mv-cc:focus-visible, button.mv-coord-dec:focus-visible { outline: 2px sol
 .mv-cc.copied, .mv-coord-dec.copied { background: rgba(63, 143, 95, .35) !important; }
 .mv-cc-done { position: absolute; left: 50%; top: calc(100% + 4px); transform: translateX(-50%); font: 700 10px/1 var(--font-sans, system-ui, sans-serif); font-style: normal; color: #0d0b08; background: #9be7c4; border-radius: 999px; padding: 3px 7px; white-space: nowrap; z-index: 5; pointer-events: none; }
 .mv-cc-hint { font-size: 10px; opacity: .7; }
+
+/* mission examples: alternatives with 'or', and an arrow to what each means */
+.q-example { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.q-or { flex-basis: 100%; font-size: 0.72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #a15c00; margin: 2px 0; }
+.q-or-inline { color: #a15c00; }
+.q-ex-arrow { color: #a15c00; font-weight: 700; }
+.q-orbit { color: #a15c00; }

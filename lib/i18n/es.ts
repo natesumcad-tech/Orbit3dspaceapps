@@ -622,6 +622,11 @@ export const ES: Record<string, string> = {
   "(click to copy)": "(haz clic para copiar)",
   "(circled in blue on the “Center J2000” line; click it to copy) into the RA box. It's hours and minutes:": "(rodeada en azul en la línea «Center J2000»; haz clic en ella para copiarla) en la casilla RA. Son horas y minutos:",
   "(circled in orange; click it to copy) into the Dec box. It's degrees, + means north:": "(rodeada en naranja; haz clic en ella para copiarla) en la casilla Dec. Son grados; + significa norte:",
+  "or": "o",
+  "You're inside! I can hear you, but we're hidden on the far side of the planet.": "¡Estás dentro! Te oigo, pero estamos ocultos en la cara oculta del planeta.",
+  "Orbit Neptune to find the Wren": "Orbita Neptuno para encontrar la Wren",
+  "Drag the dial in the Move panel to travel around Neptune (you can also drag the view). Keep going until you've gone a third of the way round.": "Arrastra el dial del panel Mover para dar la vuelta a Neptuno (también puedes arrastrar la vista). Sigue hasta recorrer un tercio de la vuelta.",
+  "Use the dial in the Move panel to fly around Neptune. Our beacon is somewhere on the far side: keep circling till you spot us.": "Usa el dial del panel Mover para volar alrededor de Neptuno. Nuestra baliza está en algún lugar de la cara oculta: sigue girando hasta vernos.",
 };
 
 /** Phrases inside computed text (distances, times…), replaced when no exact translation exists. */

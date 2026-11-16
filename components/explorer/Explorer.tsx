@@ -103,6 +103,10 @@ export default function SphereView({ stopId, onStop, onExit, onAsk, presetOrbit 
   }, [stopId, ready]);
 
   useEffect(() => engineRef.current?.setToggles(showLabels, showLines), [showLabels, showLines]);
+  // The mission listens: it asks you to travel around a planet in Orbit
+  useEffect(() => {
+    if (nav) window.dispatchEvent(new CustomEvent("sphere-nav", { detail: { az: nav.az, mode: nav.mode } }));
+  }, [nav]);
   // The tour's preset: once you've arrived, the dial travels around the planet (Orbit), not on the spot
   useEffect(() => {
     if (ready && presetOrbit && visibleId === stopId) engineRef.current?.setNavMode("orbit");

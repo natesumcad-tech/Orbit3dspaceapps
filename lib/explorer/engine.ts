@@ -420,8 +420,9 @@ export class SkyEngine {
       this.flyRadius = 640;
       this.flySpeed = 150;
     }
-    // Start in free fly wherever there's something to fly to (Earth starts circling the globe)
-    if (lm.kind === "planet" && lm.planet === "earth" && this.pivot) this.navMode = "orbit";
+    // Start in Orbit wherever there's something to go around (the dial then takes you around it);
+    // otherwise free fly where there's room to fly, or look around
+    if (this.pivot) this.navMode = "orbit";
     else if (this.flyRadius > 0) this.navMode = "fly";
     this.navKey = "";
     this.fg.updateMatrixWorld(true);
