@@ -1074,6 +1074,9 @@ export default function StarMapApp() {
           {t(ep.note, ep.vars)}
         </p>
         <Timeline value={epoch} onChange={setEpoch} />
+        <p className="mv-tl-live">
+          <i aria-hidden="true" /> {t("Always up to date: SPHEREx keeps observing, and as NASA/IPAC releases new data the map, this timeline and the dates update by themselves.")}
+        </p>
       </Collapsible>
 
       {travel && !sphere && <div className="mv-travel">{t("Traveling to {name}…", { name: t(travel) })}</div>}

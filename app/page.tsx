@@ -43,6 +43,9 @@ export default function Home() {
             An interactive map built on SPHEREx Data Release 1. Pan across the whole sky in 2D or 3D, scan its 102 infrared
             bands, step through its six-month snapshots, and open 360° views of stars, planets, galaxies and all 88 constellations.
           </p>
+          <p className="h-lede h-live">
+            <i aria-hidden="true" /> Live data: SPHEREx is still observing. As NASA/IPAC releases new data, the map updates by itself.
+          </p>
           <div className="h-ctas">
             <Link transitionTypes={["site-navigation"]} href="/map" className="h-btn">
               <span aria-hidden="true">◎</span> Open the Sky Explorer

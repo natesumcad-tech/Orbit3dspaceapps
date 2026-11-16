@@ -517,3 +517,7 @@
 .h-credits span { font-size: 0.82rem; line-height: 1.5; opacity: 0.8; }
 
 .h-fine { color: #5c5348 !important; } /* readable contrast (WCAG AA) */
+
+/* live-data note under the intro */
+.h-lede.h-live { margin-top: 12px; font-size: 0.9rem; }
+.h-live i { display: inline-block; vertical-align: middle; margin: 0 6px 2px 0; width: 8px; height: 8px; border-radius: 50%; background: #3f8f5f; box-shadow: 0 0 0 3px rgba(63, 143, 95, .2); }
